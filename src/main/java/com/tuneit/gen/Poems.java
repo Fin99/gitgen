@@ -25,6 +25,70 @@ public class Poems {
         return getPoems().get(random.nextInt(getPoems().size()));
     }
 
+    public static String deleteWord(String poem, Random random) {
+        String[] splitPoem = poem.split("\n");
+
+        StringBuilder resultPoem = new StringBuilder();
+        for (int i = 0; i < splitPoem.length; i++) {
+            String[] splitLine = splitPoem[i].split(" ");
+            int indexDeletedWord = random.nextInt(splitLine.length);
+            for (int j = 0; j < splitLine.length; j++) {
+                if (j != indexDeletedWord) {
+                    resultPoem.append(splitLine[j]);
+                    if (j != splitLine.length - 1) {
+                        resultPoem.append(' ');
+                    }
+                }
+            }
+
+            if (i != splitPoem.length - 1) {
+                resultPoem.append('\n');
+            }
+        }
+
+        return resultPoem.toString();
+    }
+
+    public static String switchSymbols(String poem, Random random) {
+        String[] splitPoem = poem.split("\n");
+
+        StringBuilder resultPoem = new StringBuilder();
+        for (int i = 0; i < splitPoem.length; i++) {
+            int indexError = random.nextInt(splitPoem[i].length());
+            resultPoem.append(splitPoem[i], 0, indexError);
+            resultPoem.append((char) (32 + random.nextInt(1071)));
+            resultPoem.append(splitPoem[i], indexError, splitPoem[i].length());
+
+            if (i != splitPoem.length - 1) {
+                resultPoem.append('\n');
+            }
+        }
+
+        return resultPoem.toString();
+    }
+
+    public static String switchLine(String poem, Random random) {
+        String[] splitPoem = poem.split("\n");
+        int firstSwitchLine = random.nextInt(splitPoem.length - 1);
+
+        StringBuilder resultPoem = new StringBuilder();
+        for (int i = 0; i < splitPoem.length; i++) {
+            if (i == firstSwitchLine) {
+                resultPoem.append(splitPoem[i + 1]);
+            } else if (i == firstSwitchLine + 1) {
+                resultPoem.append(splitPoem[i - 1]);
+            } else {
+                resultPoem.append(splitPoem[i]);
+            }
+
+            if (i != splitPoem.length - 1) {
+                resultPoem.append('\n');
+            }
+        }
+
+        return resultPoem.toString();
+    }
+
     private static List<Poem> getPoems() {
         if (singleton == null) {
             try {

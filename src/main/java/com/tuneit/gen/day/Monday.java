@@ -8,6 +8,7 @@ import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
+import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 
@@ -32,11 +33,11 @@ public class Monday implements TaskChecker, TaskGen {
     }
 
     private boolean checkBranchQuatrain3(Variant variant) throws IOException, GitAPIException {
-        Git origin = Git.open(new File(variant.getUsername() + variant.getVariant() + "origin"));
-        Git stud = Git.open(new File(variant.getUsername() + variant.getVariant()));
+        Git origin = Git.open(new File(variant.getOriginDirName()));
+        Git stud = Git.open(new File(variant.getStudDirName()));
 
-        ObjectId head = origin.getRepository().resolve("HEAD^{tree}");
-        ObjectId previousHead = stud.getRepository().resolve("HEAD^{tree}");
+        ObjectId head = origin.getRepository().resolve("quatrain3^{tree}");
+        ObjectId previousHead = stud.getRepository().resolve("quatrain3^{tree}");
 
         ObjectReader reader = origin.getRepository().newObjectReader();
 
@@ -57,13 +58,20 @@ public class Monday implements TaskChecker, TaskGen {
     }
 
     private void fixBranchQuatrain3(Variant variant) throws GitAPIException, IOException {
-        String originDirName = variant.getUsername() + variant.getVariant() + "origin";
-        File originDir = new File(originDirName); // TODO escape character
+        File originDir = new File(variant.getOriginDirName());
+        String commitName = "Third quatrain is fixed";
 
         Git origin = Git.open(originDir);
         origin.checkout().setName("quatrain3").call();
-        fixFileQuatrain3(new File(originDirName + "/poem"), variant.getRandom());
-        commit(originDir, "Third quatrain is fixed");
+
+        ObjectId lastCommit = origin.getRepository().resolve("HEAD");
+        RevWalk walker = new RevWalk(origin.getRepository());
+        String lastCommitName = walker.parseCommit(lastCommit).getFullMessage();
+
+        if (!lastCommitName.equals(commitName)) {
+            fixFileQuatrain3(new File(variant.getOriginDirName() + "/poem"), variant.getRandom());
+            commit(originDir, commitName);
+        }
     }
 
     private void fixFileQuatrain3(File file, Random random) throws IOException {
@@ -87,12 +95,11 @@ public class Monday implements TaskChecker, TaskGen {
     }
 
     private void createOriginRepository(Variant variant) throws GitAPIException, IOException {
-        String originDirName = variant.getUsername() + variant.getVariant() + "origin";
-        File originDir = new File(originDirName); // TODO escape character
+        File originDir = new File(variant.getOriginDirName());
         boolean mkdir = originDir.mkdir();
         if (!mkdir)
             throw new IllegalArgumentException("Duplicate directory");
-        File file = new File(originDirName + "/poem");
+        File file = new File(variant.getOriginDirName() + "/poem");
         boolean newFile = file.createNewFile();
         if (!newFile)
             throw new IllegalArgumentException("File already exist");
@@ -100,34 +107,31 @@ public class Monday implements TaskChecker, TaskGen {
     }
 
     private void createBranchQuatrain1(Variant variant) throws IOException, GitAPIException {
-        String originDirName = variant.getUsername() + variant.getVariant() + "origin";
-        File originDir = new File(originDirName); // TODO escape character
+        File originDir = new File(variant.getOriginDirName());
 
         Git origin = Git.open(originDir);
         origin.checkout().setCreateBranch(true).setName("quatrain1").call();
-        updateFileQuatrain1(new File(originDirName + "/poem"), variant.getRandom());
+        updateFileQuatrain1(new File(variant.getOriginDirName() + "/poem"), variant.getRandom());
         commit(originDir, "First quatrain is added");
     }
 
     private void createBranchQuatrain3(Variant variant) throws IOException, GitAPIException {
-        String originDirName = variant.getUsername() + variant.getVariant() + "origin";
-        File originDir = new File(originDirName); // TODO escape character
+        File originDir = new File(variant.getOriginDirName());
 
         Git origin = Git.open(originDir);
         origin.checkout().setName("master").call();
         origin.checkout().setCreateBranch(true).setName("quatrain3").call();
-        updateFileQuatrain3(new File(originDirName + "/poem"), variant.getRandom());
+        updateFileQuatrain3(new File(variant.getOriginDirName() + "/poem"), variant.getRandom());
         commit(originDir, "Third quatrain is added");
     }
 
     private void createStudRepository(Variant variant) throws IOException, URISyntaxException, GitAPIException {
-        String studDirName = variant.getUsername() + variant.getVariant();
-        File studDir = new File(studDirName); // TODO escape character
+        File studDir = new File(variant.getStudDirName());
         boolean mkdir = studDir.mkdir();
         if (!mkdir)
             throw new IllegalArgumentException("Duplicate directory");
 
-        File originDir = new File(studDirName + "origin"); // TODO escape character
+        File originDir = new File(variant.getOriginDirName());
         FileUtils.copyDirectory(originDir, studDir);
 
         Git origin = Git.open(originDir);
@@ -145,54 +149,15 @@ public class Monday implements TaskChecker, TaskGen {
     private void updateFileQuatrain1(File file, Random random) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         String quatrain1 = Poems.getRandomPoem(random).getQuatrain1().trim();
-        writer.write(switchSymbols(quatrain1, random));
+        writer.write(Poems.switchSymbols(quatrain1, random));
         writer.close();
     }
 
     private void updateFileQuatrain3(File file, Random random) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         String quatrain3 = Poems.getRandomPoem(random).getQuatrain3().trim();
-        writer.write(switchLine(quatrain3, random));
+        writer.write(Poems.switchLine(quatrain3, random));
         writer.close();
     }
 
-    private String switchSymbols(String poem, Random random) {
-        String[] splitPoem = poem.split("\n");
-
-        StringBuilder resultPoem = new StringBuilder();
-        for (int i = 0; i < splitPoem.length; i++) {
-            int indexError = random.nextInt(splitPoem[i].length());
-            resultPoem.append(splitPoem[i], 0, indexError);
-            resultPoem.append((char) (32 + random.nextInt(1071)));
-            resultPoem.append(splitPoem[i], indexError, splitPoem[i].length());
-
-            if (i != splitPoem.length - 1) {
-                resultPoem.append('\n');
-            }
-        }
-
-        return resultPoem.toString();
-    }
-
-    private String switchLine(String poem, Random random) {
-        String[] splitPoem = poem.split("\n");
-        int firstSwitchLine = random.nextInt(splitPoem.length - 1);
-
-        StringBuilder resultPoem = new StringBuilder();
-        for (int i = 0; i < splitPoem.length; i++) {
-            if (i == firstSwitchLine) {
-                resultPoem.append(splitPoem[i + 1]);
-            } else if (i == firstSwitchLine + 1) {
-                resultPoem.append(splitPoem[i - 1]);
-            } else {
-                resultPoem.append(splitPoem[i]);
-            }
-
-            if (i != splitPoem.length - 1) {
-                resultPoem.append('\n');
-            }
-        }
-
-        return resultPoem.toString();
-    }
 }

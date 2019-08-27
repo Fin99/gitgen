@@ -17,4 +17,12 @@ public class Variant {
     public Random getRandom() {
         return new Random(hashCode());
     }
+
+    public String getStudDirName() {
+        return username + variant; // TODO escape character
+    }
+
+    public String getOriginDirName() {
+        return username + variant + "origin"; // TODO escape character
+    }
 }
