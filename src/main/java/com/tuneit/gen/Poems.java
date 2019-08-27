@@ -17,10 +17,9 @@ import java.util.Random;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Poems {
+    private static Poems singleton;
     @XmlElement(name = "poem")
     private List<Poem> poems;
-
-    private static Poems singleton;
 
     public static Poem getRandomPoem(Random random) {
         return getPoems().get(random.nextInt(getPoems().size()));
