@@ -45,7 +45,7 @@ public class Wednesday implements TaskChecker, TaskGen {
         RevWalk walker = new RevWalk(origin.getRepository());
         String lastCommitName = walker.parseCommit(lastCommit).getFullMessage();
 
-        if (!lastCommitName.equals(commitName)) {
+        if (lastCommitName.equals("First quatrain is fixed")) {
             origin.merge().include(origin.getRepository().findRef("quatrain3")).call();
             fixConflict(new File(variant.getOriginDirName() + "/poem"), variant);
             commit(originDir, commitName);

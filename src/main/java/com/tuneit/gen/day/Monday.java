@@ -68,7 +68,7 @@ public class Monday implements TaskChecker, TaskGen {
         RevWalk walker = new RevWalk(origin.getRepository());
         String lastCommitName = walker.parseCommit(lastCommit).getFullMessage();
 
-        if (!lastCommitName.equals(commitName)) {
+        if (lastCommitName.equals("Third quatrain is added")) {
             fixFileQuatrain3(new File(variant.getOriginDirName() + "/poem"), variant.getRandom());
             commit(originDir, commitName);
         }

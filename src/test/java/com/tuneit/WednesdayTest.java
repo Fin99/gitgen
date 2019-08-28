@@ -31,7 +31,6 @@ class WednesdayTest extends RepoData {
     void initTuesdayTest() throws GitAPIException {
         List<Ref> branches = gitStud.branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
 
-        branches.forEach(branch -> System.out.println(branch.getName()));
         assertEquals(10, branches.size());
         branches.removeIf(branch -> branch.getName().equals("refs/heads/dev"));
         assertEquals(9, branches.size());
