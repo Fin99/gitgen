@@ -1,6 +1,7 @@
 package com.tuneit.gen.day;
 
 import com.tuneit.gen.*;
+import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -98,23 +99,24 @@ public class Tuesday implements TaskChecker, TaskGen {
         return null;
     }
 
-
     private void createBranchQuatrain2(Variant variant) throws IOException, GitAPIException {
-        String originDirName = variant.getUsername() + variant.getVariant() + "origin";
-        File originDir = new File(originDirName);
+        File originDir = new File(variant.getOriginDirName());
 
         Git origin = Git.open(originDir);
         origin.checkout().setName("master").call();
         origin.checkout().setCreateBranch(true).setName("quatrain2").call();
-        updateFileQuatrain2(new File(originDirName + "/poem"), variant.getRandom());
+        updateFileQuatrain2(new File(variant.getOriginDirName() + "/poem"), variant.getRandom());
         commit(originDir, "Second quatrain is added");
     }
 
     private void updateStudRepository(Variant variant) throws IOException, GitAPIException {
         Git stud = Git.open(new File(variant.getStudDirName()));
 
-        stud.fetch().setForceUpdate(true).setRemote("origin").call();
+        stud.checkout().setName("quatrain3");
+        stud.fetch().setRemote("origin").call();
         stud.reset().setMode(ResetCommand.ResetType.HARD).setRef("origin/quatrain3").call();
+        stud.checkout().setName("origin/quatrain2").call();
+        stud.checkout().setName("quatrain2").setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK).setCreateBranch(true).call();
     }
 
     private void updateFileQuatrain2(File file, Random random) throws IOException {
