@@ -70,4 +70,23 @@ abstract class RepoData {
         gitStud.add().addFilepattern(".").call();
         gitStud.commit().setMessage("test commit").call();
     }
+
+    void makeWednesday() throws IOException, GitAPIException {
+        gitStud.checkout().setName("dev").call();
+        BufferedWriter poemWriter = new BufferedWriter(new FileWriter(poemStud));
+
+        poemWriter.write("Часов однообразный бой,\n" +
+                "Томительная ночи повесть!\n" +
+                "Язык для всех равно чужой\n" +
+                "И внятный каждому, как совесть!\n\n" +
+                "Нам мнится: мир осиротелый\n" +
+                "Неотразимый Рок настиг —\n" +
+                "И мы, в борьбе, природой целой\n" +
+                "Покинуты на нас самих.");
+
+        poemWriter.close();
+
+        gitStud.add().addFilepattern(".").call();
+        gitStud.commit().setMessage("test commit").call();
+    }
 }
