@@ -89,4 +89,19 @@ abstract class RepoData {
         gitStud.add().addFilepattern(".").call();
         gitStud.commit().setMessage("test commit").call();
     }
+
+    void makeThursday() throws IOException, GitAPIException {
+        gitStud.checkout().setName("quatrain2").call();
+        BufferedWriter poemWriter = new BufferedWriter(new FileWriter(poemStud));
+
+        poemWriter.write("Кто без тоски внимал из нас,\n" +
+                "Среди всемирного молчанья,\n" +
+                "Глухие времени стенанья,\n" +
+                "Пророчески-прощальный глас?");
+
+        poemWriter.close();
+
+        gitStud.add().addFilepattern(".").call();
+        gitStud.commit().setMessage("test commit").call();
+    }
 }

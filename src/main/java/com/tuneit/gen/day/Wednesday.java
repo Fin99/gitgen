@@ -3,7 +3,6 @@ package com.tuneit.gen.day;
 import com.tuneit.gen.*;
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -114,7 +113,7 @@ public class Wednesday implements TaskChecker, TaskGen {
     private void updateStudRepository(Variant variant) throws IOException, GitAPIException {
         Git stud = Git.open(new File(variant.getStudDirName()));
 
-        stud.checkout().setName("quatrain1");
+        stud.checkout().setName("quatrain1").call();
         stud.fetch().setRemote("origin").call();
         stud.reset().setMode(ResetCommand.ResetType.HARD).setRef("origin/quatrain1").call();
         stud.checkout().setName("origin/dev").call();

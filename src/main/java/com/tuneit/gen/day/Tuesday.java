@@ -112,7 +112,7 @@ public class Tuesday implements TaskChecker, TaskGen {
     private void updateStudRepository(Variant variant) throws IOException, GitAPIException {
         Git stud = Git.open(new File(variant.getStudDirName()));
 
-        stud.checkout().setName("quatrain3");
+        stud.checkout().setName("quatrain3").call();
         stud.fetch().setRemote("origin").call();
         stud.reset().setMode(ResetCommand.ResetType.HARD).setRef("origin/quatrain3").call();
         stud.checkout().setName("origin/quatrain2").call();
