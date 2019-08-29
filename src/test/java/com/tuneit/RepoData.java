@@ -4,6 +4,7 @@ import com.tuneit.gen.TaskServiceDefault;
 import com.tuneit.gen.Variant;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,6 +74,7 @@ abstract class RepoData {
 
     void makeWednesday() throws IOException, GitAPIException {
         gitStud.checkout().setName("dev").call();
+        gitStud.merge().include(gitStud.getRepository().findRef("quatrain3")).call();
         BufferedWriter poemWriter = new BufferedWriter(new FileWriter(poemStud));
 
         poemWriter.write("Часов однообразный бой,\n" +
@@ -103,5 +105,33 @@ abstract class RepoData {
 
         gitStud.add().addFilepattern(".").call();
         gitStud.commit().setMessage("test commit").call();
+    }
+
+    void makeFriday() throws IOException, GitAPIException {
+        gitStud.checkout().setName("dev").call();
+        gitStud.merge().include(gitStud.getRepository().findRef("quatrain2")).call();
+
+        BufferedWriter poemWriter = new BufferedWriter(new FileWriter(poemStud));
+
+        poemWriter.write("Часов однообразный бой,\n" +
+                "Томительная ночи повесть!\n" +
+                "Язык для всех равно чужой\n" +
+                "И внятный каждому, как совесть!\n\n" +
+                "Кто без тоски внимал из нас,\n" +
+                "Среди всемирного молчанья,\n" +
+                "Глухие времени стенанья,\n" +
+                "Пророчески-прощальный глас?\n\n" +
+                "Нам мнится: мир осиротелый\n" +
+                "Неотразимый Рок настиг —\n" +
+                "И мы, в борьбе, природой целой\n" +
+                "Покинуты на нас самих.");
+
+        poemWriter.close();
+
+        gitStud.add().addFilepattern(".").call();
+        gitStud.commit().setMessage("merge").call();
+
+        gitStud.checkout().setName("master").call();
+        gitStud.merge().include(gitStud.getRepository().findRef("dev")).setFastForward(MergeCommand.FastForwardMode.FF_ONLY).call();
     }
 }

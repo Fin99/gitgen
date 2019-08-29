@@ -8,9 +8,9 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ThursdayTest extends RepoData {
+class FridayTest extends RepoData {
     {
-        variant = new Variant(4, "test", 1);
+        variant = new Variant(5, "test", 1);
     }
 
     @Override
@@ -24,11 +24,14 @@ class ThursdayTest extends RepoData {
         makeWednesday();
         variant.setDay(4);
         taskService.generateTask(variant);
+        makeThursday();
+        variant.setDay(5);
+        taskService.generateTask(variant);
     }
 
     @Test
     public void checkTest() throws IOException, GitAPIException {
-        makeThursday();
+        makeFriday();
 
         assertTrue(taskService.checkTask(variant));
     }
