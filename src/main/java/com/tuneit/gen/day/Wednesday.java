@@ -5,11 +5,17 @@ import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 
 import java.io.BufferedWriter;
@@ -17,7 +23,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Wednesday implements TaskChecker, TaskGen {
     @Override
@@ -52,37 +57,49 @@ public class Wednesday implements TaskChecker, TaskGen {
         }
     }
 
+    private static AbstractTreeIterator prepareTreeParser(Repository repository, String ref) throws IOException {
+        // from the commit we can build the tree which allows us to construct the TreeParser
+        Ref head = repository.exactRef(ref);
+        try (RevWalk walk = new RevWalk(repository)) {
+            RevCommit commit = walk.parseCommit(head.getObjectId());
+            RevTree tree = walk.parseTree(commit.getTree().getId());
+
+            CanonicalTreeParser treeParser = new CanonicalTreeParser();
+            try (ObjectReader reader = repository.newObjectReader()) {
+                treeParser.reset(reader, tree.getId());
+            }
+
+            walk.dispose();
+
+            return treeParser;
+        }
+    }
+
     private boolean checkMergeQuatrain1AndQuatrain3(Variant variant) throws IOException, GitAPIException {
         Git origin = Git.open(new File(variant.getOriginDirName()));
         Git stud = Git.open(new File(variant.getStudDirName()));
 
 
-        AtomicInteger count = new AtomicInteger();
-        stud.checkout().setName("dev").call();
-        stud.log().call().iterator().forEachRemaining(commit -> count.getAndIncrement());
-        if (count.get() == 9) {
-            return true;
-        }
+        AbstractTreeIterator oldTreeParser = prepareTreeParser(origin.getRepository(), "refs/heads/dev");
+        AbstractTreeIterator newTreeParser = prepareTreeParser(stud.getRepository(), "refs/heads/dev");
 
-        ObjectId head = origin.getRepository().resolve("dev^{tree}");
-        ObjectId previousHead = stud.getRepository().resolve("dev^{tree}");
-
-        ObjectReader reader = origin.getRepository().newObjectReader();
-
-        CanonicalTreeParser oldTreeIter = new CanonicalTreeParser();
-        oldTreeIter.reset(reader, previousHead);
-        CanonicalTreeParser newTreeIter = new CanonicalTreeParser();
-        newTreeIter.reset(reader, head);
-
-        List<DiffEntry> diffEntries = origin.diff().setOldTree(oldTreeIter).setNewTree(newTreeIter).call();
-        if (!diffEntries.isEmpty()) {
-            for (DiffEntry diff : diffEntries) {
-                DiffFormatter formatter = new DiffFormatter(System.out);
-                formatter.setRepository(origin.getRepository());
-                formatter.format(diff);
+        try {
+            List<DiffEntry> diffEntries = origin.diff().setOldTree(oldTreeParser).setNewTree(newTreeParser).call();
+            if (!diffEntries.isEmpty()) {
+                for (DiffEntry diff : diffEntries) {
+                    DiffFormatter formatter = new DiffFormatter(System.out);
+                    formatter.setRepository(origin.getRepository());
+                    formatter.format(diff);
+                }
             }
+            return diffEntries.isEmpty();
+        } catch (JGitInternalException e) {
+            RevWalk revWalk = new RevWalk(origin.getRepository());
+            ObjectId commitId = origin.getRepository().exactRef("refs/heads/dev").getObjectId();
+            RevCommit commit = revWalk.parseCommit(commitId);
+
+            return commit.getFullMessage().equals("Merge quatrain1 and quatrain3");
         }
-        return diffEntries.isEmpty();
     }
 
     private void fixConflict(File file, Variant variant) throws IOException {
