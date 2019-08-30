@@ -17,10 +17,6 @@ public class TaskServiceDefault implements TaskService {
                 return new Thursday();
             case 5:
                 return new Friday();
-            case 6:
-                return new Saturday();
-            case 7:
-                return new Sunday();
             default:
                 throw new IllegalStateException("Unexpected value: " + day);
         }
@@ -38,10 +34,6 @@ public class TaskServiceDefault implements TaskService {
                 return new Thursday();
             case 5:
                 return new Friday();
-            case 6:
-                return new Saturday();
-            case 7:
-                return new Sunday();
             default:
                 throw new IllegalStateException("Unexpected value: " + day);
         }

@@ -1,109 +1,69 @@
 package com.tuneit.gen.day;
 
-import com.tuneit.gen.*;
+import com.tuneit.gen.Poems;
+import com.tuneit.gen.Task;
+import com.tuneit.gen.Variant;
 import org.eclipse.jgit.api.CreateBranchCommand;
-import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
-import org.eclipse.jgit.diff.DiffEntry;
-import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.ObjectReader;
-import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.treewalk.AbstractTreeIterator;
-import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 
-public class Wednesday implements TaskChecker, TaskGen {
+public class Wednesday extends Day {
     @Override
     public Boolean checkTask(Variant variant) {
         try {
             if (!new Tuesday().checkTask(variant)) {
                 throw new UnsupportedOperationException("Tuesday check task is failed");
             }
+            init(variant);
             mergeQuatrain1AndQuatrain3(variant);
-            return checkMergeQuatrain1AndQuatrain3(variant);
+            return diffBetweenBranches("refs/heads/dev", "refs/heads/dev");
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
+        } catch (JGitInternalException e) {
+            //Friday check
         }
+
+        try {
+            RevWalk revWalk = new RevWalk(stud.getRepository());
+            ObjectId commitId = stud.getRepository().resolve("refs/heads/dev");
+            RevCommit commit = revWalk.parseCommit(commitId);
+            revWalk.markStart(commit);
+            revWalk.next();
+            return diffBetweenBranches("refs/heads/dev", revWalk.next().toObjectId().getName());
+        } catch (IOException | GitAPIException e1) {
+            e1.printStackTrace();
+        }
+
         return false;
     }
 
     private void mergeQuatrain1AndQuatrain3(Variant variant) throws GitAPIException, IOException {
+        String oldCommit = "First quatrain is fixed";
         String commitName = "Merge quatrain1 and quatrain3";
-        File originDir = new File(variant.getOriginDirName());
 
-        Git origin = Git.open(originDir);
         origin.checkout().setName("dev").call();
 
         ObjectId lastCommit = origin.getRepository().resolve("dev^{commit}");
         RevWalk walker = new RevWalk(origin.getRepository());
         String lastCommitName = walker.parseCommit(lastCommit).getFullMessage();
 
-        if (lastCommitName.equals("First quatrain is fixed")) {
+        if (lastCommitName.equals(oldCommit)) {
             origin.merge().include(origin.getRepository().findRef("quatrain3")).call();
-            fixConflict(new File(variant.getOriginDirName() + "/poem"), variant);
-            commit(originDir, commitName);
+            fixConflict(variant);
+            commit(origin, commitName);
         }
     }
 
-    private static AbstractTreeIterator prepareTreeParser(Repository repository, String ref) throws IOException {
-        // from the commit we can build the tree which allows us to construct the TreeParser
-        Ref head = repository.exactRef(ref);
-        try (RevWalk walk = new RevWalk(repository)) {
-            RevCommit commit = walk.parseCommit(head.getObjectId());
-            RevTree tree = walk.parseTree(commit.getTree().getId());
-
-            CanonicalTreeParser treeParser = new CanonicalTreeParser();
-            try (ObjectReader reader = repository.newObjectReader()) {
-                treeParser.reset(reader, tree.getId());
-            }
-
-            walk.dispose();
-
-            return treeParser;
-        }
-    }
-
-    private boolean checkMergeQuatrain1AndQuatrain3(Variant variant) throws IOException, GitAPIException {
-        Git origin = Git.open(new File(variant.getOriginDirName()));
-        Git stud = Git.open(new File(variant.getStudDirName()));
-
-
-        AbstractTreeIterator oldTreeParser = prepareTreeParser(origin.getRepository(), "refs/heads/dev");
-        AbstractTreeIterator newTreeParser = prepareTreeParser(stud.getRepository(), "refs/heads/dev");
-
-        try {
-            List<DiffEntry> diffEntries = origin.diff().setOldTree(oldTreeParser).setNewTree(newTreeParser).call();
-            if (!diffEntries.isEmpty()) {
-                for (DiffEntry diff : diffEntries) {
-                    DiffFormatter formatter = new DiffFormatter(System.out);
-                    formatter.setRepository(origin.getRepository());
-                    formatter.format(diff);
-                }
-            }
-            return diffEntries.isEmpty();
-        } catch (JGitInternalException e) {
-            RevWalk revWalk = new RevWalk(origin.getRepository());
-            ObjectId commitId = origin.getRepository().exactRef("refs/heads/dev").getObjectId();
-            RevCommit commit = revWalk.parseCommit(commitId);
-
-            return commit.getFullMessage().equals("Merge quatrain1 and quatrain3");
-        }
-    }
-
-    private void fixConflict(File file, Variant variant) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+    private void fixConflict(Variant variant) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(poem));
         String quatrain1 = Poems.getRandomPoem(variant.getRandom()).getQuatrain1().trim();
         writer.write(quatrain1);
         writer.write("\n\n");
@@ -115,42 +75,28 @@ public class Wednesday implements TaskChecker, TaskGen {
     @Override
     public Task generateTask(Variant variant) {
         try {
-
             if (!new Tuesday().checkTask(variant)) {
                 throw new UnsupportedOperationException("Tuesday check task is failed");
             }
-
-            createBranchDev(variant);
-            updateStudRepository(variant);
+            init(variant);
+            createBranchDev();
+            updateStudRepository();
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    private void createBranchDev(Variant variant) throws IOException, GitAPIException {
-        File originDir = new File(variant.getOriginDirName());
-
-        Git origin = Git.open(originDir);
+    private void createBranchDev() throws GitAPIException {
         origin.checkout().setName("quatrain1").call();
         origin.checkout().setCreateBranch(true).setName("dev").call();
     }
 
-    private void updateStudRepository(Variant variant) throws IOException, GitAPIException {
-        Git stud = Git.open(new File(variant.getStudDirName()));
-
+    private void updateStudRepository() throws GitAPIException {
         stud.checkout().setName("quatrain1").call();
         stud.fetch().setRemote("origin").call();
         stud.reset().setMode(ResetCommand.ResetType.HARD).setRef("origin/quatrain1").call();
         stud.checkout().setName("origin/dev").call();
         stud.checkout().setName("dev").setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK).setCreateBranch(true).call();
-    }
-
-
-    private void commit(File dir, String name) throws GitAPIException {
-        Git git = Git.init().setDirectory(dir).call();
-
-        git.add().addFilepattern("poem").call();
-        git.commit().setMessage(name).call();
     }
 }
