@@ -7,6 +7,7 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.transport.URIish;
 
@@ -77,7 +78,14 @@ public class Monday extends Day {
         boolean newFile = poem.createNewFile();
         if (!newFile)
             throw new IllegalArgumentException("File already exist");
-        commit(Git.init().setDirectory(originDir).call(), "initial commit");
+        Git origin = Git.init().setDirectory(originDir).call();
+
+        StoredConfig config = origin.getRepository().getConfig();
+        config.setString("user", null, "name", variant.getUsername());
+        config.setString("user", null, "email", variant.getUsername() + "@example.example");
+        config.save();
+
+        commit(origin, "initial commit");
     }
 
     private void createBranchQuatrain1(Variant variant) throws IOException, GitAPIException {
@@ -104,6 +112,12 @@ public class Monday extends Day {
 
         Git origin = Git.open(originDir);
         Git stud = Git.open(studDir);
+
+        StoredConfig config = stud.getRepository().getConfig();
+        config.setString("user", null, "name", variant.getUsername());
+        config.setString("user", null, "email", variant.getUsername() + "@example.example");
+        config.save();
+
         stud.remoteAdd().setName("origin").setUri(new URIish(origin.getRepository().getDirectory().getAbsolutePath())).call();
     }
 
