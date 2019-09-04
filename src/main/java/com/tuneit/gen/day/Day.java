@@ -3,6 +3,7 @@ package com.tuneit.gen.day;
 import com.tuneit.gen.TaskChecker;
 import com.tuneit.gen.TaskGen;
 import com.tuneit.gen.Variant;
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -66,5 +67,14 @@ public abstract class Day implements TaskChecker, TaskGen {
         treeParser.reset(reader, tree.getId());
 
         return treeParser;
+    }
+
+    void removeRepo(Variant variant) {
+        try {
+            FileUtils.deleteDirectory(new File(variant.getOriginDirName()));
+            FileUtils.deleteDirectory(new File(variant.getStudDirName()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

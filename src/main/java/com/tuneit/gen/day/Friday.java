@@ -3,38 +3,38 @@ package com.tuneit.gen.day;
 import com.tuneit.gen.Poems;
 import com.tuneit.gen.Task;
 import com.tuneit.gen.Variant;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevWalk;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class Friday extends Day {
     @Override
     public Boolean checkTask(Variant variant) {
+        boolean result = false;
         try {
             if (!new Thursday().checkTask(variant)) {
                 throw new UnsupportedOperationException("Thursday check task is failed");
             }
             init(variant);
             mergeDevAndQuatrain2(variant);
-            if (!diffBetweenBranches("refs/heads/dev", "refs/heads/dev")) {
+            result = diffBetweenBranches("refs/heads/dev", "refs/heads/dev");
+
+            if (!result) {
                 reset("dev");
-                return false;
             }
 
-            mergeDevAndMaster(variant);
-            return diffBetweenBranches("refs/heads/master", "refs/heads/master");
+            if (result) {
+                removeRepo(variant);
+            }
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
         }
-        return false;
+        return result;
     }
 
     private void mergeDevAndQuatrain2(Variant variant) throws GitAPIException, IOException {
@@ -51,21 +51,6 @@ public class Friday extends Day {
             origin.merge().include(origin.getRepository().findRef("quatrain2")).call();
             fixConflict(variant);
             commit(origin, commitName);
-        }
-    }
-
-    private void mergeDevAndMaster(Variant variant) throws GitAPIException, IOException {
-        File originDir = new File(variant.getOriginDirName());
-
-        Git origin = Git.open(originDir);
-        origin.checkout().setName("master").call();
-
-        ObjectId lastCommit = origin.getRepository().resolve("master^{commit}");
-        RevWalk walker = new RevWalk(origin.getRepository());
-        String lastCommitName = walker.parseCommit(lastCommit).getFullMessage();
-
-        if (lastCommitName.equals("initial commit")) {
-            origin.merge().include(origin.getRepository().findRef("dev")).setFastForward(MergeCommand.FastForwardMode.FF_ONLY).call();
         }
     }
 

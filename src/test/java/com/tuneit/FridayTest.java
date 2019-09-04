@@ -28,16 +28,25 @@ class FridayTest extends RepoData {
     }
 
     @Test
-    public void checkTest() {
+    void checkTest() {
         makeFriday();
 
         assertTrue(taskService.checkTask(variant));
     }
 
     @Test
-    public void checkErrorTest() {
+    void checkErrorTest() {
         makeFridayWithError();
 
         assertFalse(taskService.checkTask(variant));
+    }
+
+    @Test
+    void checkCorrectionTest() {
+        makeFridayWithError();
+        assertFalse(taskService.checkTask(variant));
+
+        makeFriday();
+        assertTrue(taskService.checkTask(variant));
     }
 }
