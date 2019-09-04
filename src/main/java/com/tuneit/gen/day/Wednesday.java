@@ -6,7 +6,6 @@ import com.tuneit.gen.Variant;
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
@@ -18,33 +17,36 @@ import java.io.IOException;
 public class Wednesday extends Day {
     @Override
     public Boolean checkTask(Variant variant) {
+        boolean result = false;
         try {
             if (!new Tuesday().checkTask(variant)) {
                 throw new UnsupportedOperationException("Tuesday check task is failed");
             }
             init(variant);
             mergeQuatrain1AndQuatrain3(variant);
-            return diffBetweenBranches("refs/heads/dev", "refs/heads/dev");
+            result = diffBetweenBranches("refs/heads/dev", "refs/heads/dev");
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
-        } catch (JGitInternalException e) {
-            //Friday check
         }
 
-        try {
-            RevWalk revWalk = new RevWalk(stud.getRepository());
-            ObjectId commitId = stud.getRepository().resolve("refs/heads/dev");
-            RevCommit commit = revWalk.parseCommit(commitId);
-            revWalk.markStart(commit);
-            revWalk.next();
-            return diffBetweenBranches("refs/heads/dev", revWalk.next().toObjectId().getName());
-        } catch (IOException | GitAPIException e1) {
-            e1.printStackTrace();
-        } catch (JGitInternalException checkFall) {
-            return false;
+        if (!result) {
+            try {
+                RevWalk revWalk = new RevWalk(stud.getRepository());
+                ObjectId commitId = stud.getRepository().resolve("refs/heads/dev");
+                RevCommit commit = revWalk.parseCommit(commitId);
+                revWalk.markStart(commit);
+                revWalk.next();
+                result = diffBetweenBranches("refs/heads/dev", revWalk.next().toObjectId().getName());
+
+                if (!result) {
+                    reset("dev");
+                }
+            } catch (IOException | GitAPIException e1) {
+                e1.printStackTrace();
+            }
         }
 
-        return false;
+        return result;
     }
 
     private void mergeQuatrain1AndQuatrain3(Variant variant) throws GitAPIException, IOException {

@@ -6,7 +6,6 @@ import com.tuneit.gen.Variant;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevWalk;
@@ -22,16 +21,18 @@ import java.util.Random;
 public class Monday extends Day {
     @Override
     public Boolean checkTask(Variant variant) {
+        boolean result = false;
         try {
             init(variant);
             fixBranchQuatrain3(variant);
-            return diffBetweenBranches("refs/heads/quatrain3", "refs/heads/quatrain3");
+            result = diffBetweenBranches("refs/heads/quatrain3", "refs/heads/quatrain3");
+            if (!result) {
+                reset("quatrain3");
+            }
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
-        } catch (JGitInternalException checkFall) {
-            return false;
         }
-        return false;
+        return result;
     }
 
     private void fixBranchQuatrain3(Variant variant) throws GitAPIException, IOException {

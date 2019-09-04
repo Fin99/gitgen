@@ -4,9 +4,10 @@ import com.tuneit.gen.TaskChecker;
 import com.tuneit.gen.TaskGen;
 import com.tuneit.gen.Variant;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.diff.DiffEntry;
-import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -36,19 +37,22 @@ public abstract class Day implements TaskChecker, TaskGen {
         git.commit().setMessage(name).call();
     }
 
-    boolean diffBetweenBranches(String originRef, String studRef) throws IOException, GitAPIException {
-        AbstractTreeIterator oldTreeParser = prepareTreeParser(origin.getRepository(), originRef);
-        AbstractTreeIterator newTreeParser = prepareTreeParser(stud.getRepository(), studRef);
+    void reset(String branchName) throws GitAPIException {
+        stud.checkout().setName(branchName).call();
+        stud.reset().setMode(ResetCommand.ResetType.HARD).setRef("HEAD~1").call();
+    }
 
-        List<DiffEntry> diffEntries = origin.diff().setOldTree(oldTreeParser).setNewTree(newTreeParser).call();
-        if (!diffEntries.isEmpty()) {
-            for (DiffEntry diff : diffEntries) {
-                DiffFormatter formatter = new DiffFormatter(System.out);
-                formatter.setRepository(origin.getRepository());
-                formatter.format(diff);
-            }
+    boolean diffBetweenBranches(String originRef, String studRef) throws IOException, GitAPIException {
+        try {
+            AbstractTreeIterator oldTreeParser = prepareTreeParser(origin.getRepository(), originRef);
+            AbstractTreeIterator newTreeParser = prepareTreeParser(stud.getRepository(), studRef);
+
+            List<DiffEntry> diffEntries = origin.diff().setOldTree(oldTreeParser).setNewTree(newTreeParser).call();
+
+            return diffEntries.isEmpty();
+        } catch (JGitInternalException fall) {
+            return false;
         }
-        return diffEntries.isEmpty();
     }
 
     AbstractTreeIterator prepareTreeParser(Repository repository, String ref) throws IOException {

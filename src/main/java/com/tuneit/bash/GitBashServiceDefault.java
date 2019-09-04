@@ -37,7 +37,7 @@ public class GitBashServiceDefault implements GitBashService {
 
             String command = line.substring(line.indexOf(" ") + 1);
 
-            if (Pattern.matches("checkout( -b)? (master|dev|quatrain[123])", command)) {
+            if (Pattern.matches("checkout (master|dev|quatrain[123])", command)) {
                 return command(line, variant);
             } else if (Pattern.matches("merge (master|dev|quatrain[123])", command)) {
                 return command(line, variant);

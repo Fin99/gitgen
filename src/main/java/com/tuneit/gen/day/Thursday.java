@@ -5,7 +5,6 @@ import com.tuneit.gen.Task;
 import com.tuneit.gen.Variant;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevWalk;
 
@@ -17,19 +16,22 @@ import java.util.Random;
 public class Thursday extends Day {
     @Override
     public Boolean checkTask(Variant variant) {
+        boolean result = false;
         try {
             if (!new Wednesday().checkTask(variant)) {
                 throw new UnsupportedOperationException("Wednesday check task is failed");
             }
             init(variant);
             fixBranchQuatrain2(variant);
-            return diffBetweenBranches("refs/heads/quatrain2", "refs/heads/quatrain2");
+            result = diffBetweenBranches("refs/heads/quatrain2", "refs/heads/quatrain2");
+
+            if (!result) {
+                reset("quatrain2");
+            }
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
-        } catch (JGitInternalException checkFall) {
-            return false;
         }
-        return false;
+        return result;
     }
 
     private void fixBranchQuatrain2(Variant variant) throws GitAPIException, IOException {
