@@ -1,17 +1,15 @@
 package com.tuneit;
 
+import com.tuneit.bash.GitBashServiceDefault;
 import com.tuneit.gen.TaskServiceDefault;
 import com.tuneit.gen.Variant;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
 abstract class RepoData {
@@ -23,6 +21,7 @@ abstract class RepoData {
     Git gitOrigin;
 
     TaskService taskService = new TaskServiceDefault();
+    GitBashService bashService = new GitBashServiceDefault();
 
     Variant variant;
 
@@ -42,78 +41,60 @@ abstract class RepoData {
         FileUtils.deleteDirectory(dirOrigin);
     }
 
-    void makeMonday() throws IOException, GitAPIException {
-        gitStud.checkout().setName("quatrain3").call();
-        BufferedWriter poemWriter = new BufferedWriter(new FileWriter(poemStud));
-
-        poemWriter.write("Нам мнится: мир осиротелый\n" +
+    void makeMonday() {
+        Variant variant = new Variant(1, "test", 1);
+        bashService.executeCommand("git checkout quatrain3", variant);
+        bashService.poem("Нам мнится: мир осиротелый\n" +
                 "Неотразимый Рок настиг —\n" +
                 "И мы, в борьбе, природой целой\n" +
-                "Покинуты на нас самих.");
-
-        poemWriter.close();
-
-        gitStud.add().addFilepattern(".").call();
-        gitStud.commit().setMessage("test commit").call();
+                "Покинуты на нас самих.", variant);
+        bashService.executeCommand("git add .", variant);
+        bashService.executeCommand("git commit -m \"test commit\"", variant);
     }
 
-    void makeTuesday() throws IOException, GitAPIException {
-        gitStud.checkout().setName("quatrain1").call();
-        BufferedWriter poemWriter = new BufferedWriter(new FileWriter(poemStud));
-
-        poemWriter.write("Часов однообразный бой,\n" +
+    void makeTuesday() {
+        Variant variant = new Variant(2, "test", 1);
+        bashService.executeCommand("git checkout quatrain1", variant);
+        bashService.poem("Часов однообразный бой,\n" +
                 "Томительная ночи повесть!\n" +
                 "Язык для всех равно чужой\n" +
-                "И внятный каждому, как совесть!");
-
-        poemWriter.close();
-
-        gitStud.add().addFilepattern(".").call();
-        gitStud.commit().setMessage("test commit").call();
+                "И внятный каждому, как совесть!", variant);
+        bashService.executeCommand("git add .", variant);
+        bashService.executeCommand("git commit -m \"test commit\"", variant);
     }
 
-    void makeWednesday() throws IOException, GitAPIException {
-        gitStud.checkout().setName("dev").call();
-        gitStud.merge().include(gitStud.getRepository().findRef("quatrain3")).call();
-        BufferedWriter poemWriter = new BufferedWriter(new FileWriter(poemStud));
-
-        poemWriter.write("Часов однообразный бой,\n" +
+    void makeWednesday() {
+        Variant variant = new Variant(3, "test", 1);
+        bashService.executeCommand("git checkout dev", variant);
+        bashService.executeCommand("git merge quatrain3", variant);
+        bashService.poem("Часов однообразный бой,\n" +
                 "Томительная ночи повесть!\n" +
                 "Язык для всех равно чужой\n" +
                 "И внятный каждому, как совесть!\n\n" +
                 "Нам мнится: мир осиротелый\n" +
                 "Неотразимый Рок настиг —\n" +
                 "И мы, в борьбе, природой целой\n" +
-                "Покинуты на нас самих.");
-
-        poemWriter.close();
-
-        gitStud.add().addFilepattern(".").call();
-        gitStud.commit().setMessage("test commit").call();
+                "Покинуты на нас самих.", variant);
+        bashService.executeCommand("git add .", variant);
+        bashService.executeCommand("git commit -m \"test commit\"", variant);
     }
 
-    void makeThursday() throws IOException, GitAPIException {
-        gitStud.checkout().setName("quatrain2").call();
-        BufferedWriter poemWriter = new BufferedWriter(new FileWriter(poemStud));
-
-        poemWriter.write("Кто без тоски внимал из нас,\n" +
+    void makeThursday() {
+        Variant variant = new Variant(4, "test", 1);
+        bashService.executeCommand("git checkout quatrain2", variant);
+        bashService.poem("Кто без тоски внимал из нас,\n" +
                 "Среди всемирного молчанья,\n" +
                 "Глухие времени стенанья,\n" +
-                "Пророчески-прощальный глас?");
-
-        poemWriter.close();
-
-        gitStud.add().addFilepattern(".").call();
-        gitStud.commit().setMessage("test commit").call();
+                "Пророчески-прощальный глас?", variant);
+        bashService.executeCommand("git add .", variant);
+        bashService.executeCommand("git commit -m \"test commit\"", variant);
     }
 
-    void makeFriday() throws IOException, GitAPIException {
-        gitStud.checkout().setName("dev").call();
-        gitStud.merge().include(gitStud.getRepository().findRef("quatrain2")).call();
-
-        BufferedWriter poemWriter = new BufferedWriter(new FileWriter(poemStud));
-
-        poemWriter.write("Часов однообразный бой,\n" +
+    void makeFriday() {
+        Variant variant = new Variant(5, "test", 1);
+        bashService.executeCommand("git checkout dev", variant);
+        bashService.executeCommand("git merge quatrain2", variant);
+        bashService.poem("Часов однообразный бой,\n" +
                 "Томительная ночи повесть!\n" +
                 "Язык для всех равно чужой\n" +
                 "И внятный каждому, как совесть!\n\n" +
@@ -124,14 +105,11 @@ abstract class RepoData {
                 "Нам мнится: мир осиротелый\n" +
                 "Неотразимый Рок настиг —\n" +
                 "И мы, в борьбе, природой целой\n" +
-                "Покинуты на нас самих.");
+                "Покинуты на нас самих.", variant);
+        bashService.executeCommand("git add .", variant);
+        bashService.executeCommand("git commit -m \"merge\"", variant);
 
-        poemWriter.close();
-
-        gitStud.add().addFilepattern(".").call();
-        gitStud.commit().setMessage("merge").call();
-
-        gitStud.checkout().setName("master").call();
-        gitStud.merge().include(gitStud.getRepository().findRef("dev")).setFastForward(MergeCommand.FastForwardMode.FF_ONLY).call();
+        bashService.executeCommand("git checkout master", variant);
+        bashService.executeCommand("git merge dev", variant);
     }
 }
