@@ -52,12 +52,34 @@ abstract class RepoData {
         bashService.executeCommand("git commit -m \"test commit\"", variant);
     }
 
+    void makeMondayWithError() {
+        Variant variant = new Variant(1, "test", 1);
+        bashService.executeCommand("git checkout quatrain3", variant);
+        bashService.poem("Нам мнится: мир осиротелый\n" +
+                "Неотразимый Рок настиг —\n" +
+                "И мы, в борьбе, прироой целой\n" +
+                "Покинуты на нас самих.", variant);
+        bashService.executeCommand("git add .", variant);
+        bashService.executeCommand("git commit -m \"test commit\"", variant);
+    }
+
     void makeTuesday() {
         Variant variant = new Variant(2, "test", 1);
         bashService.executeCommand("git checkout quatrain1", variant);
         bashService.poem("Часов однообразный бой,\n" +
                 "Томительная ночи повесть!\n" +
                 "Язык для всех равно чужой\n" +
+                "И внятный каждому, как совесть!", variant);
+        bashService.executeCommand("git add .", variant);
+        bashService.executeCommand("git commit -m \"test commit\"", variant);
+    }
+
+    void makeTuesdayWithError() {
+        Variant variant = new Variant(2, "test", 1);
+        bashService.executeCommand("git checkout quatrain1", variant);
+        bashService.poem("Часов однообразный бой,\n" +
+                "Томительная ночи повесть!\n" +
+                "Язык для всех равн чужой\n" +
                 "И внятный каждому, как совесть!", variant);
         bashService.executeCommand("git add .", variant);
         bashService.executeCommand("git commit -m \"test commit\"", variant);
@@ -79,6 +101,22 @@ abstract class RepoData {
         bashService.executeCommand("git commit -m \"test commit\"", variant);
     }
 
+    void makeWednesdayWithError() {
+        Variant variant = new Variant(3, "test", 1);
+        bashService.executeCommand("git checkout dev", variant);
+        bashService.executeCommand("git merge quatrain3", variant);
+        bashService.poem("Часов однообразный бой,\n" +
+                "Томительная ночи повесть!\n" +
+                "Язык для всех равно чужой\n" +
+                "И внятный каждому, как совесть!\n\n" +
+                "Нам мнится: мир осиротелый\n" +
+                "Неотразимый Рокнастиг —\n" +
+                "И мы, в борьбе, природой целой\n" +
+                "Покинуты на нас самих.", variant);
+        bashService.executeCommand("git add .", variant);
+        bashService.executeCommand("git commit -m \"test commit\"", variant);
+    }
+
     void makeThursday() {
         Variant variant = new Variant(4, "test", 1);
         bashService.executeCommand("git checkout quatrain2", variant);
@@ -90,12 +128,46 @@ abstract class RepoData {
         bashService.executeCommand("git commit -m \"test commit\"", variant);
     }
 
+    void makeThursdayWithError() {
+        Variant variant = new Variant(4, "test", 1);
+        bashService.executeCommand("git checkout quatrain2", variant);
+        bashService.poem("Кто без тоски внимал из нас,\n" +
+                "Среди всемирного молчанья,\n" +
+                "Глухие времени стенаья,\n" +
+                "Пророчески-прощальный глас?", variant);
+        bashService.executeCommand("git add .", variant);
+        bashService.executeCommand("git commit -m \"test commit\"", variant);
+    }
+
     void makeFriday() {
         Variant variant = new Variant(5, "test", 1);
         bashService.executeCommand("git checkout dev", variant);
         bashService.executeCommand("git merge quatrain2", variant);
         bashService.poem("Часов однообразный бой,\n" +
                 "Томительная ночи повесть!\n" +
+                "Язык для всех равно чужой\n" +
+                "И внятный каждому, как совесть!\n\n" +
+                "Кто без тоски внимал из нас,\n" +
+                "Среди всемирного молчанья,\n" +
+                "Глухие времени стенанья,\n" +
+                "Пророчески-прощальный глас?\n\n" +
+                "Нам мнится: мир осиротелый\n" +
+                "Неотразимый Рок настиг —\n" +
+                "И мы, в борьбе, природой целой\n" +
+                "Покинуты на нас самих.", variant);
+        bashService.executeCommand("git add .", variant);
+        bashService.executeCommand("git commit -m \"merge\"", variant);
+
+        bashService.executeCommand("git checkout master", variant);
+        bashService.executeCommand("git merge dev", variant);
+    }
+
+    void makeFridayWithError() {
+        Variant variant = new Variant(5, "test", 1);
+        bashService.executeCommand("git checkout dev", variant);
+        bashService.executeCommand("git merge quatrain2", variant);
+        bashService.poem("Часов однообразный бой,\n" +
+                "Томительна ночи повесть!\n" +
                 "Язык для всех равно чужой\n" +
                 "И внятный каждому, как совесть!\n\n" +
                 "Кто без тоски внимал из нас,\n" +

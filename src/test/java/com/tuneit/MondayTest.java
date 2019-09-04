@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class MondayTest extends RepoData {
 
@@ -56,4 +55,10 @@ class MondayTest extends RepoData {
         assertTrue(taskService.checkTask(variant));
     }
 
+    @Test
+    void checkErrorTest() {
+        makeMondayWithError();
+
+        assertFalse(taskService.checkTask(variant));
+    }
 }

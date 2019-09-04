@@ -40,6 +40,8 @@ public class Wednesday extends Day {
             return diffBetweenBranches("refs/heads/dev", revWalk.next().toObjectId().getName());
         } catch (IOException | GitAPIException e1) {
             e1.printStackTrace();
+        } catch (JGitInternalException checkFall) {
+            return false;
         }
 
         return false;

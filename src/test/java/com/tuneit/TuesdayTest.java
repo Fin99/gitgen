@@ -6,11 +6,9 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class TuesdayTest extends RepoData {
     {
@@ -18,7 +16,7 @@ class TuesdayTest extends RepoData {
     }
 
     @Override
-    void createTask() throws IOException, GitAPIException {
+    void createTask() {
         makeMonday();
         taskService.generateTask(variant);
     }
@@ -39,9 +37,16 @@ class TuesdayTest extends RepoData {
     }
 
     @Test
-    public void checkTest() throws IOException, GitAPIException {
+    public void checkTest() {
         makeTuesday();
 
         assertTrue(taskService.checkTask(variant));
+    }
+
+    @Test
+    public void checkErrorTest() {
+        makeTuesdayWithError();
+
+        assertFalse(taskService.checkTask(variant));
     }
 }

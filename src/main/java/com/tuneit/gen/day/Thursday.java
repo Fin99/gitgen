@@ -5,6 +5,7 @@ import com.tuneit.gen.Task;
 import com.tuneit.gen.Variant;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevWalk;
 
@@ -25,6 +26,8 @@ public class Thursday extends Day {
             return diffBetweenBranches("refs/heads/quatrain2", "refs/heads/quatrain2");
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
+        } catch (JGitInternalException checkFall) {
+            return false;
         }
         return false;
     }

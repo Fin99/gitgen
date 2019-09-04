@@ -1,11 +1,9 @@
 package com.tuneit;
 
 import com.tuneit.gen.Variant;
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FridayTest extends RepoData {
@@ -14,7 +12,7 @@ class FridayTest extends RepoData {
     }
 
     @Override
-    void createTask() throws IOException, GitAPIException {
+    void createTask() {
         makeMonday();
         variant.setDay(2);
         taskService.generateTask(variant);
@@ -30,9 +28,16 @@ class FridayTest extends RepoData {
     }
 
     @Test
-    public void checkTest() throws IOException, GitAPIException {
+    public void checkTest() {
         makeFriday();
 
         assertTrue(taskService.checkTask(variant));
+    }
+
+    @Test
+    public void checkErrorTest() {
+        makeFridayWithError();
+
+        assertFalse(taskService.checkTask(variant));
     }
 }

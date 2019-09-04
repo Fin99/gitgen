@@ -7,6 +7,7 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevWalk;
 
@@ -32,6 +33,8 @@ public class Friday extends Day {
             return diffBetweenBranches("refs/heads/master", "refs/heads/master");
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
+        } catch (JGitInternalException checkFall) {
+            return false;
         }
         return false;
     }
