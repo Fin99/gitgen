@@ -1,12 +1,16 @@
 package com.tuneit.bash;
 
 import com.tuneit.GitBashService;
+import com.tuneit.TaskService;
+import com.tuneit.gen.TaskServiceDefault;
 import com.tuneit.gen.Variant;
 
 import java.io.*;
 import java.util.regex.Pattern;
 
 public class GitBashServiceDefault implements GitBashService {
+    private TaskService taskService = new TaskServiceDefault();
+
     @Override
     public String poem(String poem, Variant variant) {
         try (BufferedWriter bufferedReader = new BufferedWriter(new FileWriter(new File(variant.getStudDirName() + "/poem")))) {
@@ -42,7 +46,12 @@ public class GitBashServiceDefault implements GitBashService {
             } else if (Pattern.matches("merge (master|dev|quatrain[123])", command)) {
                 return command(line, variant);
             } else if (Pattern.matches("commit -m \"[A-z0-9 ]*?\"", command)) {
-                return command(line, variant);
+                String resultCommit = command(line, variant);
+                if (variant.getDay() == 1) {
+                    taskService.generateTask(variant);
+                }
+                Boolean checkerResult = taskService.checkTask(variant);
+                return resultCommit + (checkerResult ? "\nУспешно" : "Ошибка в ответе");
             } else if (Pattern.matches("add (poem|\\.)", command)) {
                 return command(line, variant);
             } else {
