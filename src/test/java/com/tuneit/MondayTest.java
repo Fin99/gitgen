@@ -5,6 +5,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,12 +16,10 @@ class MondayTest extends RepoData {
         variant = new Variant(1, "test", 1);
     }
 
-    @Override
-    void createTask() {
-    }
-
     @Test
-    void initMondayTest() throws GitAPIException {
+    void initMondayTest() throws GitAPIException, IOException {
+        taskService.generateTask(new Variant(1, variant.getUsername(), variant.getVariant()));
+        initGit();
         assertTrue(dirStud.exists());
         assertTrue(dirOrigin.exists());
 

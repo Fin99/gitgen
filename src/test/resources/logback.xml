@@ -1,0 +1,17 @@
+<configuration scan="true" scanPeriod="300 seconds">
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>----------\n%white(%msg%n)-----------</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+    </appender>
+    <root level="debug">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+
+    <logger name="org.apache.tomcat.util.net.NioEndpoint" level="OFF"/>
+</configuration>

@@ -1,6 +1,7 @@
 package com.tuneit;
 
 import com.tuneit.gen.Variant;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -11,7 +12,7 @@ class ThursdayTest extends RepoData {
         variant = new Variant(4, "test", 1);
     }
 
-    @Override
+    @BeforeEach
     void createTask() {
         makeMonday();
         variant.setDay(2);

@@ -4,25 +4,32 @@ import com.tuneit.GitBashService;
 import com.tuneit.TaskService;
 import com.tuneit.gen.TaskServiceDefault;
 import com.tuneit.gen.Variant;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.util.regex.Pattern;
 
+@Slf4j
 public class GitBashServiceDefault implements GitBashService {
     private TaskService taskService = new TaskServiceDefault();
 
     @Override
     public String poem(String poem, Variant variant) {
+        log.debug("poem ...");
         try (BufferedWriter bufferedReader = new BufferedWriter(new FileWriter(new File(variant.getStudDirName() + "/poem")))) {
             bufferedReader.write(poem);
+            return "Файл успешно изменён";
         } catch (IOException e) {
             e.printStackTrace();
+            return "Ошибка при попытке открытия файла";
         }
-        return null;
     }
 
     @Override
     public String executeCommand(String line, Variant variant) {
+        if (variant.getDay() == 1 && !new File(variant.getStudDirName()).exists()) {
+            taskService.generateTask(variant);
+        }
         try {
             if (line == null) {
                 return "Empty line";
@@ -47,9 +54,6 @@ public class GitBashServiceDefault implements GitBashService {
                 return command(line, variant);
             } else if (Pattern.matches("commit -m \"[A-z0-9 ]*?\"", command)) {
                 String resultCommit = command(line, variant);
-                if (variant.getDay() == 1) {
-                    taskService.generateTask(variant);
-                }
                 Boolean checkerResult = taskService.checkTask(variant);
                 return resultCommit + (checkerResult ? "\nУспешно" : "Ошибка в ответе");
             } else if (Pattern.matches("add (poem|\\.)", command)) {
@@ -83,6 +87,7 @@ public class GitBashServiceDefault implements GitBashService {
     }
 
     private String command(String command, Variant variant) throws IOException {
+        log.debug(command);
         Process status = new ProcessBuilder().command("bash", "-c", command).directory(new File(variant.getStudDirName())).start();
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(status.getInputStream()));
@@ -99,8 +104,11 @@ public class GitBashServiceDefault implements GitBashService {
         resultLine = reader.readLine();
         if (resultLine != null) {
             while (resultLine != null) {
-                result.append(resultLine).append("\n");
+                result.append(resultLine);
                 resultLine = reader.readLine();
+                if (resultLine != null) {
+                    result.append("\n");
+                }
             }
         }
 
