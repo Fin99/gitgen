@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -31,13 +30,8 @@ class FridayTest extends RepoData {
         taskService.generateTask(variant);
     }
 
-    @Override
-    void deleteRepo() {
-
-    }
-
     @Test
-    void checkTest() throws IOException {
+    void checkTest() {
         makeFriday();
 
         assertFalse(new File(variant.getStudDirName()).exists());

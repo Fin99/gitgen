@@ -33,10 +33,17 @@ public class Wednesday extends Day {
             try {
                 RevWalk revWalk = new RevWalk(stud.getRepository());
                 ObjectId commitId = stud.getRepository().resolve("refs/heads/dev");
-                RevCommit commit = revWalk.parseCommit(commitId);
-                revWalk.markStart(commit);
-                revWalk.next();
-                result = diffBetweenBranches("refs/heads/dev", revWalk.next().toObjectId().getName());
+                RevCommit oldCommit = revWalk.parseCommit(commitId);
+                revWalk.markStart(oldCommit);
+
+                RevCommit commit = revWalk.next();
+                while (commit != null && !commit.getFullMessage().equals("Merge quatrain1 and quatrain3")) {
+                    commit = revWalk.next();
+                }
+
+                if (commit != null) {
+                    result = diffBetweenBranches("refs/heads/dev", commit.toObjectId().getName());
+                }
 
                 if (!result) {
                     reset("dev");
