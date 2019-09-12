@@ -8,6 +8,7 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.StoredConfig;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.transport.URIish;
 
@@ -27,7 +28,12 @@ public class Monday extends Day {
             fixBranchQuatrain3(variant);
             result = diffBetweenBranches("refs/heads/quatrain3", "refs/heads/quatrain3");
             if (!result) {
-                reset("quatrain3");
+                RevWalk revWalk = new RevWalk(stud.getRepository());
+                ObjectId commitId = stud.getRepository().resolve("refs/heads/quatrain3");
+                RevCommit oldCommit = revWalk.parseCommit(commitId);
+                if (!oldCommit.getFullMessage().equals("Third quatrain is added")) {
+                    reset("quatrain3");
+                }
             }
 
             return new Task(result, result ? null : "Вы не выполнили задачу. Злой тестер откатил репозиторий.");

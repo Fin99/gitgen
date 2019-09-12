@@ -46,7 +46,12 @@ public class Wednesday extends Day {
                 }
 
                 if (!result) {
-                    reset("dev");
+                    revWalk = new RevWalk(stud.getRepository());
+                    commitId = stud.getRepository().resolve("refs/heads/dev");
+                    oldCommit = revWalk.parseCommit(commitId);
+                    if (!oldCommit.getFullMessage().equals("First quatrain is fixed")) {
+                        reset("dev");
+                    }
                 }
             } catch (IOException | GitAPIException e1) {
                 e1.printStackTrace();

@@ -7,6 +7,7 @@ import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 
 import java.io.BufferedWriter;
@@ -27,7 +28,12 @@ public class Tuesday extends Day {
             result = diffBetweenBranches("refs/heads/quatrain1", "refs/heads/quatrain1");
 
             if (!result) {
-                reset("quatrain1");
+                RevWalk revWalk = new RevWalk(stud.getRepository());
+                ObjectId commitId = stud.getRepository().resolve("refs/heads/quatrain1");
+                RevCommit oldCommit = revWalk.parseCommit(commitId);
+                if (!oldCommit.getFullMessage().equals("First quatrain is added")) {
+                    reset("quatrain1");
+                }
             }
 
             return new Task(result, result ? null : "Вы не выполнили задачу. Злой тестер откатил репозиторий.");

@@ -6,6 +6,7 @@ import com.tuneit.gen.Variant;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 
 import java.io.BufferedWriter;
@@ -25,7 +26,12 @@ public class Friday extends Day {
             boolean result = diffBetweenBranches("refs/heads/dev", "refs/heads/dev");
 
             if (!result) {
-                reset("dev");
+                RevWalk revWalk = new RevWalk(stud.getRepository());
+                ObjectId commitId = stud.getRepository().resolve("refs/heads/dev");
+                RevCommit oldCommit = revWalk.parseCommit(commitId);
+                if (!oldCommit.getFullMessage().equals("Merge quatrain1 and quatrain3")) {
+                    reset("dev");
+                }
             }
 
             if (result) {

@@ -5,7 +5,7 @@
             <pattern>----------\n%red(%msg%n)-----------</pattern>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>info</level>
+            <level>error</level>
         </filter>
     </appender>
     <root level="debug">

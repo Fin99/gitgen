@@ -27,6 +27,32 @@ public class GitBashServiceDefault implements GitBashService {
     }
 
     @Override
+    public Integer getDay(Variant variant) {
+        if (!new File(variant.getStudDirName()).exists()) {
+            return 0;
+        } else if (taskService.checkTask(new Variant(4, variant.getUsername(), variant.getVariant())).getResult()) {
+            return 5;
+        } else if (taskService.checkTask(new Variant(3, variant.getUsername(), variant.getVariant())).getResult()) {
+            return 4;
+        } else if (taskService.checkTask(new Variant(2, variant.getUsername(), variant.getVariant())).getResult()) {
+            return 3;
+        } else if (taskService.checkTask(new Variant(1, variant.getUsername(), variant.getVariant())).getResult()) {
+            return 2;
+        } else {
+            return 1;
+        }
+    }
+
+    @Override
+    public Task init(Variant variant) {
+        if (variant.getDay() == 0 && !new File(variant.getStudDirName()).exists()) {
+            variant.setDay(1);
+            return taskService.generateTask(variant);
+        }
+        return null;
+    }
+
+    @Override
     public CommandResult executeCommand(String line, Variant variant) {
         if (variant.getDay() == 1 && !new File(variant.getStudDirName()).exists()) {
             taskService.generateTask(variant);
