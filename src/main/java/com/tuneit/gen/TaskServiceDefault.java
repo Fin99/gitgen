@@ -1,7 +1,6 @@
 package com.tuneit.gen;
 
 import com.tuneit.TaskService;
-import com.tuneit.bash.CommandResult;
 import com.tuneit.gen.day.*;
 
 public class TaskServiceDefault implements TaskService {
@@ -41,12 +40,12 @@ public class TaskServiceDefault implements TaskService {
     }
 
     @Override
-    public CommandResult generateTask(Variant variant) {
+    public Task generateTask(Variant variant) {
         return getGenerator(variant.getDay()).generateTask(variant);
     }
 
     @Override
-    public Boolean checkTask(Variant variant) {
+    public Task checkTask(Variant variant) {
         return getChecker(variant.getDay()).checkTask(variant);
     }
 }

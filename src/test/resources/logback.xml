@@ -5,13 +5,12 @@
             <pattern>----------\n%red(%msg%n)-----------</pattern>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>ERROR</level>
+            <level>info</level>
         </filter>
     </appender>
     <root level="debug">
         <appender-ref ref="STDOUT"/>
     </root>
-
 
     <logger name="org.apache.tomcat.util.net.NioEndpoint" level="OFF"/>
 </configuration>

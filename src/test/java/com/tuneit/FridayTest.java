@@ -18,16 +18,12 @@ class FridayTest extends RepoData {
     void createTask() {
         makeMonday();
         variant.setDay(2);
-        taskService.generateTask(variant);
         makeTuesday();
         variant.setDay(3);
-        taskService.generateTask(variant);
         makeWednesday();
         variant.setDay(4);
-        taskService.generateTask(variant);
         makeThursday();
         variant.setDay(5);
-        taskService.generateTask(variant);
     }
 
     @Test

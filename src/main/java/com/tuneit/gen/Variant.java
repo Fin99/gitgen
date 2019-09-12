@@ -25,4 +25,8 @@ public class Variant {
     public String getOriginDirName() {
         return username + variant + "origin"; // TODO escape character
     }
+
+    public Variant nextDay() {
+        return new Variant(day + 1, username, variant);
+    }
 }

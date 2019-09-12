@@ -1,7 +1,7 @@
 package com.tuneit.gen.day;
 
-import com.tuneit.bash.CommandResult;
 import com.tuneit.gen.Poems;
+import com.tuneit.gen.Task;
 import com.tuneit.gen.Variant;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
@@ -20,7 +20,7 @@ import java.util.Random;
 
 public class Monday extends Day {
     @Override
-    public Boolean checkTask(Variant variant) {
+    public Task checkTask(Variant variant) {
         boolean result = false;
         try {
             init(variant);
@@ -29,10 +29,12 @@ public class Monday extends Day {
             if (!result) {
                 reset("quatrain3");
             }
+
+            return new Task(result, result ? null : "Вы не выполнили задачу. Злой тестер откатил репозиторий.");
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
+            return new Task(false, "Ошибка при работе с репозиторием");
         }
-        return result;
     }
 
     private void fixBranchQuatrain3(Variant variant) throws GitAPIException, IOException {
@@ -59,7 +61,7 @@ public class Monday extends Day {
     }
 
     @Override
-    public CommandResult generateTask(Variant variant) {
+    public Task generateTask(Variant variant) {
         try {
             createOriginRepository(variant);
             origin = Git.open(new File(variant.getOriginDirName()));
@@ -67,10 +69,11 @@ public class Monday extends Day {
             createBranchQuatrain1(variant);
             createBranchQuatrain3(variant);
             createStudRepository(variant);
+            return new Task(true, "Задание первое: исправь ошибки в третьем абзаце.");
         } catch (GitAPIException | IOException | URISyntaxException e) {
             e.printStackTrace();
+            return new Task(false, "Ошибка при работе с репозиторием");
         }
-        return null; // TODO replace null value
     }
 
     private void createOriginRepository(Variant variant) throws GitAPIException, IOException {

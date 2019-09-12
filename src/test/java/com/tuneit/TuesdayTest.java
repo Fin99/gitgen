@@ -20,7 +20,6 @@ class TuesdayTest extends RepoData {
     @BeforeEach
     void createTask() {
         makeMonday();
-        taskService.generateTask(variant);
     }
 
     @Test
@@ -43,22 +42,22 @@ class TuesdayTest extends RepoData {
     void checkTest() {
         makeTuesday();
 
-        assertTrue(taskService.checkTask(variant));
+        assertTrue(taskService.checkTask(variant).getResult());
     }
 
     @Test
     void checkErrorTest() {
         makeTuesdayWithError();
 
-        assertFalse(taskService.checkTask(variant));
+        assertFalse(taskService.checkTask(variant).getResult());
     }
 
     @Test
     void checkCorrectionTest() {
         makeTuesdayWithError();
-        assertFalse(taskService.checkTask(variant));
+        assertFalse(taskService.checkTask(variant).getResult());
 
         makeTuesday();
-        assertTrue(taskService.checkTask(variant));
+        assertTrue(taskService.checkTask(variant).getResult());
     }
 }

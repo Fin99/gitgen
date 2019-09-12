@@ -1,7 +1,7 @@
 package com.tuneit.gen.day;
 
-import com.tuneit.bash.CommandResult;
 import com.tuneit.gen.Poems;
+import com.tuneit.gen.Task;
 import com.tuneit.gen.Variant;
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.ResetCommand;
@@ -16,11 +16,11 @@ import java.io.IOException;
 
 public class Wednesday extends Day {
     @Override
-    public Boolean checkTask(Variant variant) {
+    public Task checkTask(Variant variant) {
         boolean result = false;
         try {
-            if (!new Tuesday().checkTask(variant)) {
-                throw new UnsupportedOperationException("Tuesday check task is failed");
+            if (!new Tuesday().checkTask(variant).getResult()) {
+                return new Task(false, "Ошибка при проверке предыдущего репозитория");
             }
             init(variant);
             mergeQuatrain1AndQuatrain3(variant);
@@ -50,10 +50,12 @@ public class Wednesday extends Day {
                 }
             } catch (IOException | GitAPIException e1) {
                 e1.printStackTrace();
+                return new Task(false, "Ошибка при работе с репозиторием");
             }
         }
 
-        return result;
+
+        return new Task(result, result ? null : "Вы не выполнили задачу. Злой тестер откатил репозиторий.");
     }
 
     private void mergeQuatrain1AndQuatrain3(Variant variant) throws GitAPIException, IOException {
@@ -84,18 +86,19 @@ public class Wednesday extends Day {
     }
 
     @Override
-    public CommandResult generateTask(Variant variant) {
+    public Task generateTask(Variant variant) {
         try {
-            if (!new Tuesday().checkTask(variant)) {
-                throw new UnsupportedOperationException("Tuesday check task is failed");
+            if (!new Tuesday().checkTask(variant).getResult()) {
+                return new Task(false, "Ошибка при проверке предыдущего репозитория");
             }
             init(variant);
             createBranchDev();
             updateStudRepository();
+            return new Task(true, "Задание третье: соедините первый и второй абзац в ветку dev");
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
+            return new Task(false, "Ошибка при работе с репозиторием");
         }
-        return null;
     }
 
     private void createBranchDev() throws GitAPIException {

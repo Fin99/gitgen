@@ -2,6 +2,7 @@ package com.tuneit.bash;
 
 import com.tuneit.GitBashService;
 import com.tuneit.TaskService;
+import com.tuneit.gen.Task;
 import com.tuneit.gen.TaskServiceDefault;
 import com.tuneit.gen.Variant;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,7 @@ public class GitBashServiceDefault implements GitBashService {
 
     @Override
     public String poem(String poem, Variant variant) {
-        log.debug("poem ...");
+        log.info("poem ...");
         try (BufferedWriter bufferedReader = new BufferedWriter(new FileWriter(new File(variant.getStudDirName() + "/poem")))) {
             bufferedReader.write(poem);
             return "Файл успешно изменён";
@@ -53,9 +54,14 @@ public class GitBashServiceDefault implements GitBashService {
             } else if (Pattern.matches("merge (master|dev|quatrain[123])", command)) {
                 return new CommandResult(command(line, variant));
             } else if (Pattern.matches("commit -m \"[A-z0-9 ]*?\"", command)) {
-                String resultCommit = command(line, variant);
-                Boolean checkerResult = taskService.checkTask(variant);
-                return new CommandResult(resultCommit, checkerResult ? "Успешно" : "Ошибка в ответе");
+                String resultCommand = command(line, variant);
+                Task checkerResult = taskService.checkTask(variant);
+                if (variant.getDay() != 5 && checkerResult.getResult()) {
+                    Task generatorResult = taskService.generateTask(variant.nextDay());
+                    return new CommandResult(resultCommand, generatorResult.getTaskText());
+                } else {
+                    return new CommandResult(resultCommand, checkerResult.getTaskText());
+                }
             } else if (Pattern.matches("add (poem|\\.)", command)) {
                 return new CommandResult(command(line, variant));
             } else {
@@ -87,7 +93,7 @@ public class GitBashServiceDefault implements GitBashService {
     }
 
     private String command(String command, Variant variant) throws IOException {
-        log.debug(command);
+        log.info(command);
         Process status = new ProcessBuilder().command("bash", "-c", command).directory(new File(variant.getStudDirName())).start();
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(status.getInputStream()));

@@ -16,35 +16,32 @@ class ThursdayTest extends RepoData {
     void createTask() {
         makeMonday();
         variant.setDay(2);
-        taskService.generateTask(variant);
         makeTuesday();
         variant.setDay(3);
-        taskService.generateTask(variant);
         makeWednesday();
         variant.setDay(4);
-        taskService.generateTask(variant);
     }
 
     @Test
     void checkTest() {
         makeThursday();
 
-        assertTrue(taskService.checkTask(variant));
+        assertTrue(taskService.checkTask(variant).getResult());
     }
 
     @Test
     void checkErrorTest() {
         makeThursdayWithError();
 
-        assertFalse(taskService.checkTask(variant));
+        assertFalse(taskService.checkTask(variant).getResult());
     }
 
     @Test
     void checkCorrectionTest() {
         makeThursdayWithError();
-        assertFalse(taskService.checkTask(variant));
+        assertFalse(taskService.checkTask(variant).getResult());
 
         makeThursday();
-        assertTrue(taskService.checkTask(variant));
+        assertTrue(taskService.checkTask(variant).getResult());
     }
 }
