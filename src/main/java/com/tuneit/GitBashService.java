@@ -1,9 +1,10 @@
 package com.tuneit;
 
+import com.tuneit.bash.CommandResult;
 import com.tuneit.gen.Variant;
 
 public interface GitBashService {
-    String executeCommand(String command, Variant variant);
+    CommandResult executeCommand(String command, Variant variant);
 
     String poem(String poem, Variant variant);
 }

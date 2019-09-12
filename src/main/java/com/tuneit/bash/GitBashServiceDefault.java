@@ -26,44 +26,44 @@ public class GitBashServiceDefault implements GitBashService {
     }
 
     @Override
-    public String executeCommand(String line, Variant variant) {
+    public CommandResult executeCommand(String line, Variant variant) {
         if (variant.getDay() == 1 && !new File(variant.getStudDirName()).exists()) {
             taskService.generateTask(variant);
         }
         try {
             if (line == null) {
-                return "Empty line";
+                return new CommandResult("Empty line");
             }
             line = line.trim();
             if (!line.contains(" ")) {
-                return "Empty line";
+                return new CommandResult("Empty line");
             }
 
             if (line.equals("cat poem")) {
-                return command("cat poem", variant);
+                return new CommandResult(command("cat poem", variant));
             }
             if (!line.substring(0, line.indexOf(" ")).equals("git")) {
-                return "Command not found";
+                return new CommandResult("Command not found");
             }
 
             String command = line.substring(line.indexOf(" ") + 1);
 
             if (Pattern.matches("checkout (master|dev|quatrain[123])", command)) {
-                return command(line, variant);
+                return new CommandResult(command(line, variant));
             } else if (Pattern.matches("merge (master|dev|quatrain[123])", command)) {
-                return command(line, variant);
+                return new CommandResult(command(line, variant));
             } else if (Pattern.matches("commit -m \"[A-z0-9 ]*?\"", command)) {
                 String resultCommit = command(line, variant);
                 Boolean checkerResult = taskService.checkTask(variant);
-                return resultCommit + (checkerResult ? "\nУспешно" : "Ошибка в ответе");
+                return new CommandResult(resultCommit, checkerResult ? "Успешно" : "Ошибка в ответе");
             } else if (Pattern.matches("add (poem|\\.)", command)) {
-                return command(line, variant);
+                return new CommandResult(command(line, variant));
             } else {
-                return easyCommand(command, variant);
+                return new CommandResult(easyCommand(command, variant));
             }
         } catch (IOException e) {
             e.printStackTrace();
-            return "";
+            return new CommandResult("Ошибка при обработке комманды");
         }
     }
 

@@ -1,7 +1,7 @@
 package com.tuneit.gen.day;
 
+import com.tuneit.bash.CommandResult;
 import com.tuneit.gen.Poems;
-import com.tuneit.gen.Task;
 import com.tuneit.gen.Variant;
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.ResetCommand;
@@ -84,7 +84,7 @@ public class Wednesday extends Day {
     }
 
     @Override
-    public Task generateTask(Variant variant) {
+    public CommandResult generateTask(Variant variant) {
         try {
             if (!new Tuesday().checkTask(variant)) {
                 throw new UnsupportedOperationException("Tuesday check task is failed");

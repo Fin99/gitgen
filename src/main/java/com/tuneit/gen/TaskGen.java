@@ -1,5 +1,7 @@
 package com.tuneit.gen;
 
+import com.tuneit.bash.CommandResult;
+
 public interface TaskGen {
-    Task generateTask(Variant variant);
+    CommandResult generateTask(Variant variant);
 }

@@ -1,7 +1,7 @@
 package com.tuneit.gen.day;
 
+import com.tuneit.bash.CommandResult;
 import com.tuneit.gen.Poems;
-import com.tuneit.gen.Task;
 import com.tuneit.gen.Variant;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
@@ -59,7 +59,7 @@ public class Monday extends Day {
     }
 
     @Override
-    public Task generateTask(Variant variant) {
+    public CommandResult generateTask(Variant variant) {
         try {
             createOriginRepository(variant);
             origin = Git.open(new File(variant.getOriginDirName()));

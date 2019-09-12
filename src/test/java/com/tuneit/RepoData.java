@@ -38,52 +38,52 @@ abstract class RepoData {
 
     void makeMonday() {
         Variant variant = new Variant(1, "test", 1);
-        log.debug(bashService.executeCommand("git checkout quatrain3", variant));
+        log.debug(bashService.executeCommand("git checkout quatrain3", variant).getCommandResult());
         log.debug(bashService.poem("Нам мнится: мир осиротелый\n" +
                 "Неотразимый Рок настиг —\n" +
                 "И мы, в борьбе, природой целой\n" +
                 "Покинуты на нас самих.", variant));
-        log.debug(bashService.executeCommand("git add .", variant));
-        log.debug(bashService.executeCommand("git commit -m \"test commit\"", variant));
+        log.debug(bashService.executeCommand("git add .", variant).getCommandResult());
+        log.debug(bashService.executeCommand("git commit -m \"test commit\"", variant).getCommandResult());
     }
 
     void makeMondayWithError() {
         Variant variant = new Variant(1, "test", 1);
-        log.debug(bashService.executeCommand("git checkout quatrain3", variant));
+        log.debug(bashService.executeCommand("git checkout quatrain3", variant).getCommandResult());
         log.debug(bashService.poem("Нам мнится: мир осиротелый\n" +
                 "Неотразимый Рок настиг —\n" +
                 "И мы, в борьбе, прироой целой\n" +
                 "Покинуты на нас самих.", variant));
-        log.debug(bashService.executeCommand("git add .", variant));
-        log.debug(bashService.executeCommand("git commit -m \"test commit\"", variant));
+        log.debug(bashService.executeCommand("git add .", variant).getCommandResult());
+        log.debug(bashService.executeCommand("git commit -m \"test commit\"", variant).getCommandResult());
     }
 
     void makeTuesday() {
         Variant variant = new Variant(2, "test", 1);
-        log.debug(bashService.executeCommand("git checkout quatrain1", variant));
+        log.debug(bashService.executeCommand("git checkout quatrain1", variant).getCommandResult());
         log.debug(bashService.poem("Часов однообразный бой,\n" +
                 "Томительная ночи повесть!\n" +
                 "Язык для всех равно чужой\n" +
                 "И внятный каждому, как совесть!", variant));
-        log.debug(bashService.executeCommand("git add .", variant));
-        log.debug(bashService.executeCommand("git commit -m \"test commit\"", variant));
+        log.debug(bashService.executeCommand("git add .", variant).getCommandResult());
+        log.debug(bashService.executeCommand("git commit -m \"test commit\"", variant).getCommandResult());
     }
 
     void makeTuesdayWithError() {
         Variant variant = new Variant(2, "test", 1);
-        log.debug(bashService.executeCommand("git checkout quatrain1", variant));
+        log.debug(bashService.executeCommand("git checkout quatrain1", variant).getCommandResult());
         log.debug(bashService.poem("Часов однообразный бой,\n" +
                 "Томительная ночи повесть!\n" +
                 "Язык для всех равн чужой\n" +
                 "И внятный каждому, как совесть!", variant));
-        log.debug(bashService.executeCommand("git add .", variant));
-        log.debug(bashService.executeCommand("git commit -m \"test commit\"", variant));
+        log.debug(bashService.executeCommand("git add .", variant).getCommandResult());
+        log.debug(bashService.executeCommand("git commit -m \"test commit\"", variant).getCommandResult());
     }
 
     void makeWednesday() {
         Variant variant = new Variant(3, "test", 1);
-        log.debug(bashService.executeCommand("git checkout dev", variant));
-        log.debug(bashService.executeCommand("git merge quatrain3", variant));
+        log.debug(bashService.executeCommand("git checkout dev", variant).getCommandResult());
+        log.debug(bashService.executeCommand("git merge quatrain3", variant).getCommandResult());
         log.debug(bashService.poem("Часов однообразный бой,\n" +
                 "Томительная ночи повесть!\n" +
                 "Язык для всех равно чужой\n" +
@@ -92,14 +92,14 @@ abstract class RepoData {
                 "Неотразимый Рок настиг —\n" +
                 "И мы, в борьбе, природой целой\n" +
                 "Покинуты на нас самих.", variant));
-        log.debug(bashService.executeCommand("git add .", variant));
-        log.debug(bashService.executeCommand("git commit -m \"test commit\"", variant));
+        log.debug(bashService.executeCommand("git add .", variant).getCommandResult());
+        log.debug(bashService.executeCommand("git commit -m \"test commit\"", variant).getCommandResult());
     }
 
     void makeWednesdayWithError() {
         Variant variant = new Variant(3, "test", 1);
-        log.debug(bashService.executeCommand("git checkout dev", variant));
-        log.debug(bashService.executeCommand("git merge quatrain3", variant));
+        log.debug(bashService.executeCommand("git checkout dev", variant).getCommandResult());
+        log.debug(bashService.executeCommand("git merge quatrain3", variant).getCommandResult());
         log.debug(bashService.poem("Часов однообразный бой,\n" +
                 "Томительная ночи повесть!\n" +
                 "Язык для всех равно чужой\n" +
@@ -108,36 +108,36 @@ abstract class RepoData {
                 "Неотразимый Рокнастиг —\n" +
                 "И мы, в борьбе, природой целой\n" +
                 "Покинуты на нас самих.", variant));
-        log.debug(bashService.executeCommand("git add .", variant));
-        log.debug(bashService.executeCommand("git commit -m \"test commit\"", variant));
+        log.debug(bashService.executeCommand("git add .", variant).getCommandResult());
+        log.debug(bashService.executeCommand("git commit -m \"test commit\"", variant).getCommandResult());
     }
 
     void makeThursday() {
         Variant variant = new Variant(4, "test", 1);
-        log.debug(bashService.executeCommand("git checkout quatrain2", variant));
+        log.debug(bashService.executeCommand("git checkout quatrain2", variant).getCommandResult());
         log.debug(bashService.poem("Кто без тоски внимал из нас,\n" +
                 "Среди всемирного молчанья,\n" +
                 "Глухие времени стенанья,\n" +
                 "Пророчески-прощальный глас?", variant));
-        log.debug(bashService.executeCommand("git add .", variant));
-        log.debug(bashService.executeCommand("git commit -m \"test commit\"", variant));
+        log.debug(bashService.executeCommand("git add .", variant).getCommandResult());
+        log.debug(bashService.executeCommand("git commit -m \"test commit\"", variant).getCommandResult());
     }
 
     void makeThursdayWithError() {
         Variant variant = new Variant(4, "test", 1);
-        log.debug(bashService.executeCommand("git checkout quatrain2", variant));
+        log.debug(bashService.executeCommand("git checkout quatrain2", variant).getCommandResult());
         log.debug(bashService.poem("Кто без тоски внимал из нас,\n" +
                 "Среди всемирного молчанья,\n" +
                 "Глухие времени стенаья,\n" +
                 "Пророчески-прощальный глас?", variant));
-        log.debug(bashService.executeCommand("git add .", variant));
-        log.debug(bashService.executeCommand("git commit -m \"test commit\"", variant));
+        log.debug(bashService.executeCommand("git add .", variant).getCommandResult());
+        log.debug(bashService.executeCommand("git commit -m \"test commit\"", variant).getCommandResult());
     }
 
     void makeFriday() {
         Variant variant = new Variant(5, "test", 1);
-        log.debug(bashService.executeCommand("git checkout dev", variant));
-        log.debug(bashService.executeCommand("git merge quatrain2", variant));
+        log.debug(bashService.executeCommand("git checkout dev", variant).getCommandResult());
+        log.debug(bashService.executeCommand("git merge quatrain2", variant).getCommandResult());
         log.debug(bashService.poem("Часов однообразный бой,\n" +
                 "Томительная ночи повесть!\n" +
                 "Язык для всех равно чужой\n" +
@@ -150,14 +150,14 @@ abstract class RepoData {
                 "Неотразимый Рок настиг —\n" +
                 "И мы, в борьбе, природой целой\n" +
                 "Покинуты на нас самих.", variant));
-        log.debug(bashService.executeCommand("git add .", variant));
-        log.debug(bashService.executeCommand("git commit -m \"merge\"", variant));
+        log.debug(bashService.executeCommand("git add .", variant).getCommandResult());
+        log.debug(bashService.executeCommand("git commit -m \"merge\"", variant).getCommandResult());
     }
 
     void makeFridayWithError() {
         Variant variant = new Variant(5, "test", 1);
-        log.debug(bashService.executeCommand("git checkout dev", variant));
-        log.debug(bashService.executeCommand("git merge quatrain2", variant));
+        log.debug(bashService.executeCommand("git checkout dev", variant).getCommandResult());
+        log.debug(bashService.executeCommand("git merge quatrain2", variant).getCommandResult());
         log.debug(bashService.poem("Часов однообразный бой,\n" +
                 "Томительна ночи повесть!\n" +
                 "Язык для всех равно чужой\n" +
@@ -170,7 +170,7 @@ abstract class RepoData {
                 "Неотразимый Рок настиг —\n" +
                 "И мы, в борьбе, природой целой\n" +
                 "Покинуты на нас самих.", variant));
-        log.debug(bashService.executeCommand("git add .", variant));
-        log.debug(bashService.executeCommand("git commit -m \"merge\"", variant));
+        log.debug(bashService.executeCommand("git add .", variant).getCommandResult());
+        log.debug(bashService.executeCommand("git commit -m \"merge\"", variant).getCommandResult());
     }
 }
