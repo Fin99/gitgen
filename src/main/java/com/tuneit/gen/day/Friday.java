@@ -4,12 +4,14 @@ import com.tuneit.data.Poems;
 import com.tuneit.data.Variant;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevWalk;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 import static com.tuneit.gen.GitAPI.*;
 
@@ -23,7 +25,11 @@ public class Friday extends Day {
             init(variant);
             mergeDevAndQuatrain2(variant);
 
-            boolean result = diffBetweenBranches(repo, "refs/heads/dev", "refs/heads/dev").isEmpty();
+            List<DiffEntry> diffEntries = diffBetweenBranches(repo, "refs/heads/dev", "refs/heads/dev");
+            if (diffEntries == null) {
+                return false;
+            }
+            boolean result = diffEntries.isEmpty();
 
             if (!result) {
                 if (!getFirstCommit(repo.getStud(), "dev").getFullMessage().equals("Merge quatrain1 and quatrain3")) {

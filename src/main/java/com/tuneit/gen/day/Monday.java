@@ -6,6 +6,7 @@ import com.tuneit.gen.Repo;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevWalk;
@@ -16,6 +17,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Random;
 
 import static com.tuneit.gen.GitAPI.*;
@@ -26,7 +28,11 @@ public class Monday extends Day {
         try {
             init(variant);
             fixBranchQuatrain3(variant);
-            boolean result = diffBetweenBranches(repo, "refs/heads/quatrain3", "Third quatrain is fixed").isEmpty();
+            List<DiffEntry> diffEntries = diffBetweenBranches(repo, "refs/heads/quatrain3", "Third quatrain is fixed");
+            if (diffEntries == null) {
+                return false;
+            }
+            boolean result = diffEntries.isEmpty();
             if (!result) {
                 if (!getFirstCommit(repo.getStud(), "quatrain3").getFullMessage().equals("Third quatrain is added")) {
                     reset(repo.getStud(), "quatrain3");

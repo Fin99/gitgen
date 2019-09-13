@@ -5,12 +5,14 @@ import com.tuneit.data.Variant;
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevWalk;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 
 import static com.tuneit.gen.GitAPI.*;
@@ -24,7 +26,11 @@ public class Tuesday extends Day {
             }
             init(variant);
             fixBranchQuatrain1(variant);
-            boolean result = diffBetweenBranches(repo, "refs/heads/quatrain1", "refs/heads/quatrain1").isEmpty();
+            List<DiffEntry> diffEntries = diffBetweenBranches(repo, "refs/heads/quatrain1", "refs/heads/quatrain1");
+            if (diffEntries == null) {
+                return false;
+            }
+            boolean result = diffEntries.isEmpty();
 
             if (!result) {
                 if (!getFirstCommit(repo.getStud(), "quatrain1").getFullMessage().equals("First quatrain is added")) {

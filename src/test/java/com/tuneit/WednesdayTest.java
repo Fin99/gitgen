@@ -1,6 +1,5 @@
 package com.tuneit;
 
-import com.tuneit.data.Variant;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
@@ -13,10 +12,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class WednesdayTest extends RepoData {
-    {
-        variant = new Variant(3, "test", 1);
-    }
-
     @BeforeEach
     void createTask() {
         makeMonday();

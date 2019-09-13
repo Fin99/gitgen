@@ -6,12 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevWalk;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 import static com.tuneit.gen.GitAPI.*;
 
@@ -19,23 +21,28 @@ import static com.tuneit.gen.GitAPI.*;
 public class Wednesday extends Day {
     @Override
     public Boolean checkTask(Variant variant) {
-        boolean result = false;
         try {
             if (!new Tuesday().checkTask(variant)) {
                 return false;
             }
             init(variant);
             mergeQuatrain1AndQuatrain3(variant);
-            result = diffBetweenBranches(repo, "refs/heads/dev", "Merge quatrain1 and quatrain3").isEmpty();
+            List<DiffEntry> diffEntries = diffBetweenBranches(repo, "refs/heads/dev", "Merge quatrain1 and quatrain3");
+            if (diffEntries == null) {
+                return false;
+            }
+            boolean result = diffEntries.isEmpty();
             if (!result) {
                 if (!getFirstCommit(repo.getStud(), "dev").getFullMessage().equals("First quatrain is fixed")) {
                     reset(repo.getStud(), "dev");
                 }
             }
+
+            return result;
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
+            return false;
         }
-        return result;
     }
 
     private void mergeQuatrain1AndQuatrain3(Variant variant) throws GitAPIException, IOException {
