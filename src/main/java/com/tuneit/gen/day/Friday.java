@@ -24,10 +24,7 @@ public class Friday extends Day {
             mergeDevAndQuatrain2(variant);
 
             List<DiffEntry> diffEntries = diffBetweenBranches(repo, "dev", "Merge dev and quatrain2");
-            if (diffEntries == null) {
-                return false;
-            }
-            boolean result = diffEntries.isEmpty();
+            boolean result = diffEntries != null && diffEntries.isEmpty();
 
             if (!result) {
                 if (!getFirstCommit(repo.getStud(), "dev").getFullMessage().equals("Merge quatrain1 and quatrain3")) {

@@ -116,34 +116,39 @@ public class GitBashServiceDefault implements GitBashService {
     }
 
     private String command(String command, Variant variant) throws IOException {
-        log.info(command);
+        log.info("Username: " + variant.getUsername() + ". Day: " + variant.getDay() + ". Command: " + command);
         Process status = new ProcessBuilder().command("bash", "-c", command).directory(new File(variant.getStudDirName())).start();
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(status.getInputStream()));
-        StringBuilder result = new StringBuilder();
-        String resultLine = reader.readLine();
-        if (resultLine != null) {
-            while (resultLine != null) {
-                result.append(resultLine);
-                resultLine = reader.readLine();
-                if (resultLine != null) {
-                    result.append("\n");
-                }
-            }
+
+        String result = readCommandResult(status.getInputStream());
+        if (result != null) {
+            return result;
         }
 
-        reader = new BufferedReader(new InputStreamReader(status.getErrorStream()));
-        resultLine = reader.readLine();
-        if (resultLine != null) {
-            while (resultLine != null) {
-                result.append(resultLine);
-                resultLine = reader.readLine();
-                if (resultLine != null) {
-                    result.append("\n");
-                }
-            }
+        result = readCommandResult(status.getErrorStream());
+        if (result != null) {
+            return result;
         }
 
-        return result.toString();
+        return "";
+    }
+
+    private String readCommandResult(InputStream inputStream) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String resultLine = reader.readLine();
+            if (resultLine != null) {
+                StringBuilder result = new StringBuilder();
+                result.append(resultLine);
+                resultLine = reader.readLine();
+                while (resultLine != null) {
+                    result.append("\n");
+                    result.append(resultLine);
+                    resultLine = reader.readLine();
+                }
+                return result.toString();
+            } else {
+                return null;
+            }
+        }
     }
 }

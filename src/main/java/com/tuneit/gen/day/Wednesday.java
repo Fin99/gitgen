@@ -26,10 +26,8 @@ public class Wednesday extends Day {
             init(variant);
             mergeQuatrain1AndQuatrain3(variant);
             List<DiffEntry> diffEntries = diffBetweenBranches(repo, "dev", "Merge quatrain1 and quatrain3");
-            if (diffEntries == null) {
-                return false;
-            }
-            boolean result = diffEntries.isEmpty();
+            boolean result = diffEntries != null && diffEntries.isEmpty();
+
             if (!result) {
                 if (!getFirstCommit(repo.getStud(), "dev").getFullMessage().equals("First quatrain is fixed")) {
                     reset(repo.getStud(), "dev");
@@ -83,8 +81,7 @@ public class Wednesday extends Day {
     }
 
     private void createBranchDev() throws GitAPIException {
-        repo.getOrigin().checkout().setName("quatrain1").call();
-        repo.getOrigin().checkout().setCreateBranch(true).setName("dev").call();
+        repo.getOrigin().checkout().setCreateBranch(true).setStartPoint("quatrain1").setName("dev").call();
     }
 
     private void updateStudRepository() throws GitAPIException {

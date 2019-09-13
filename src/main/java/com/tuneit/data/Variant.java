@@ -11,7 +11,7 @@ import java.util.Random;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class Variant {
-    private Integer day; // from 1 to 7
+    private Integer day; // from 1 to 5
     @NonNull
     private String username;
     @NonNull

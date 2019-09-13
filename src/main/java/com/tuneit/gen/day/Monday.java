@@ -27,10 +27,8 @@ public class Monday extends Day {
             init(variant);
             fixBranchQuatrain3(variant);
             List<DiffEntry> diffEntries = diffBetweenBranches(repo, "quatrain3", "Third quatrain is fixed");
-            if (diffEntries == null) {
-                return false;
-            }
-            boolean result = diffEntries.isEmpty();
+            boolean result = diffEntries != null && diffEntries.isEmpty();
+
             if (!result) {
                 if (!getFirstCommit(repo.getStud(), "quatrain3").getFullMessage().equals("Third quatrain is added")) {
                     reset(repo.getStud(), "quatrain3");
@@ -100,14 +98,13 @@ public class Monday extends Day {
     }
 
     private void createBranchQuatrain1(Variant variant) throws IOException, GitAPIException {
-        repo.getOrigin().checkout().setCreateBranch(true).setName("quatrain1").call();
+        repo.getOrigin().checkout().setCreateBranch(true).setStartPoint("master").setName("quatrain1").call();
         updateFileQuatrain1(variant.getRandom());
         commit(repo.getOrigin(), "First quatrain is added");
     }
 
     private void createBranchQuatrain3(Variant variant) throws IOException, GitAPIException {
-        repo.getOrigin().checkout().setName("master").call();
-        repo.getOrigin().checkout().setCreateBranch(true).setName("quatrain3").call();
+        repo.getOrigin().checkout().setCreateBranch(true).setStartPoint("master").setName("quatrain3").call();
         updateFileQuatrain3(variant.getRandom());
         commit(repo.getOrigin(), "Third quatrain is added");
     }

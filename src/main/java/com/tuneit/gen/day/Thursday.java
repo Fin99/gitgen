@@ -24,10 +24,7 @@ public class Thursday extends Day {
             init(variant);
             fixBranchQuatrain2(variant);
             List<DiffEntry> diffEntries = diffBetweenBranches(repo, "quatrain2", "Second quatrain is fixed");
-            if (diffEntries == null) {
-                return false;
-            }
-            boolean result = diffEntries.isEmpty();
+            boolean result = diffEntries != null && diffEntries.isEmpty();
 
             if (!result) {
                 if (!getFirstCommit(repo.getStud(), "quatrain2").getFullMessage().equals("Second quatrain is added")) {
