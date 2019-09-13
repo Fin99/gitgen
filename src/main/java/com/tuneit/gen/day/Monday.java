@@ -18,19 +18,21 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Random;
 
+import static com.tuneit.gen.GitAPI.*;
+
 public class Monday extends Day {
     @Override
     public Boolean checkTask(Variant variant) {
         try {
             init(variant);
             fixBranchQuatrain3(variant);
-            boolean result = diffBetweenBranches("refs/heads/quatrain3", "refs/heads/quatrain3");
+            boolean result = diffBetweenBranches(repo, "refs/heads/quatrain3", "refs/heads/quatrain3").isEmpty();
             if (!result) {
-                RevWalk revWalk = new RevWalk(stud.getRepository());
-                ObjectId commitId = stud.getRepository().resolve("refs/heads/quatrain3");
+                RevWalk revWalk = new RevWalk(repo.getStud().getRepository());
+                ObjectId commitId = repo.getStud().getRepository().resolve("refs/heads/quatrain3");
                 RevCommit oldCommit = revWalk.parseCommit(commitId);
                 if (!oldCommit.getFullMessage().equals("Third quatrain is added")) {
-                    reset("quatrain3");
+                    reset(repo.getStud(), "quatrain3");
                 }
             }
 
@@ -45,15 +47,15 @@ public class Monday extends Day {
         String oldCommit = "Third quatrain is added";
         String commitName = "Third quatrain is fixed";
 
-        origin.checkout().setName("quatrain3").call();
+        repo.getOrigin().checkout().setName("quatrain3").call();
 
-        ObjectId lastCommit = origin.getRepository().findRef("HEAD").getObjectId();
-        RevWalk walker = new RevWalk(origin.getRepository());
+        ObjectId lastCommit = repo.getOrigin().getRepository().findRef("HEAD").getObjectId();
+        RevWalk walker = new RevWalk(repo.getOrigin().getRepository());
         String lastCommitName = walker.parseCommit(lastCommit).getFullMessage();
 
         if (lastCommitName.equals(oldCommit)) {
             fixFileQuatrain3(variant.getRandom());
-            commit(origin, commitName);
+            commit(repo.getOrigin(), commitName);
         }
     }
 
@@ -68,7 +70,7 @@ public class Monday extends Day {
     public void generateTask(Variant variant) {
         try {
             createOriginRepository(variant);
-            origin = Git.open(new File(variant.getOriginDirName()));
+            repo.setOrigin(Git.open(new File(variant.getOriginDirName())));
             poem = new File(variant.getOriginDirName() + "/poem");
             createBranchQuatrain1(variant);
             createBranchQuatrain3(variant);
@@ -103,16 +105,16 @@ public class Monday extends Day {
     }
 
     private void createBranchQuatrain1(Variant variant) throws IOException, GitAPIException {
-        origin.checkout().setCreateBranch(true).setName("quatrain1").call();
+        repo.getOrigin().checkout().setCreateBranch(true).setName("quatrain1").call();
         updateFileQuatrain1(variant.getRandom());
-        commit(origin, "First quatrain is added");
+        commit(repo.getOrigin(), "First quatrain is added");
     }
 
     private void createBranchQuatrain3(Variant variant) throws IOException, GitAPIException {
-        origin.checkout().setName("master").call();
-        origin.checkout().setCreateBranch(true).setName("quatrain3").call();
+        repo.getOrigin().checkout().setName("master").call();
+        repo.getOrigin().checkout().setCreateBranch(true).setName("quatrain3").call();
         updateFileQuatrain3(variant.getRandom());
-        commit(origin, "Third quatrain is added");
+        commit(repo.getOrigin(), "Third quatrain is added");
     }
 
     private void createStudRepository(Variant variant) throws IOException, URISyntaxException, GitAPIException {

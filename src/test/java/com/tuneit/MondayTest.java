@@ -51,22 +51,22 @@ class MondayTest extends RepoData {
     void checkTest() {
         makeMonday();
 
-        assertTrue(taskService.checkTask(variant).getResult());
+        assertTrue(taskService.checkTask(variant));
     }
 
     @Test
     void checkErrorTest() {
         makeMondayWithError();
 
-        assertFalse(taskService.checkTask(variant).getResult());
+        assertFalse(taskService.checkTask(variant));
     }
 
     @Test
     void checkCorrectionTest() {
         makeMondayWithError();
-        assertFalse(taskService.checkTask(variant).getResult());
+        assertFalse(taskService.checkTask(variant));
 
         makeMonday();
-        assertTrue(taskService.checkTask(variant).getResult());
+        assertTrue(taskService.checkTask(variant));
     }
 }

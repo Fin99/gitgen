@@ -14,6 +14,8 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import static com.tuneit.gen.GitAPI.*;
+
 @Slf4j
 public class Wednesday extends Day {
     @Override
@@ -25,15 +27,15 @@ public class Wednesday extends Day {
             }
             init(variant);
             mergeQuatrain1AndQuatrain3(variant);
-            result = diffBetweenBranches("refs/heads/dev", "refs/heads/dev");
+            result = diffBetweenBranches(repo, "refs/heads/dev", "refs/heads/dev").isEmpty();
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
         }
 
         if (!result) {
             try {
-                RevWalk revWalk = new RevWalk(stud.getRepository());
-                ObjectId commitId = stud.getRepository().resolve("refs/heads/dev");
+                RevWalk revWalk = new RevWalk(repo.getStud().getRepository());
+                ObjectId commitId = repo.getStud().getRepository().resolve("refs/heads/dev");
                 RevCommit oldCommit = revWalk.parseCommit(commitId);
                 revWalk.markStart(oldCommit);
 
@@ -43,15 +45,15 @@ public class Wednesday extends Day {
                 }
 
                 if (commit != null) {
-                    result = diffBetweenBranches("refs/heads/dev", commit.toObjectId().getName());
+                    result = diffBetweenBranches(repo, "refs/heads/dev", commit.toObjectId().getName()).isEmpty();
                 }
 
                 if (!result) {
-                    revWalk = new RevWalk(stud.getRepository());
-                    commitId = stud.getRepository().resolve("refs/heads/dev");
+                    revWalk = new RevWalk(repo.getStud().getRepository());
+                    commitId = repo.getStud().getRepository().resolve("refs/heads/dev");
                     oldCommit = revWalk.parseCommit(commitId);
                     if (!oldCommit.getFullMessage().equals("First quatrain is fixed")) {
-                        reset("dev");
+                        reset(repo.getStud(), "dev");
                     }
                 }
             } catch (IOException | GitAPIException e1) {
@@ -68,16 +70,16 @@ public class Wednesday extends Day {
         String oldCommit = "First quatrain is fixed";
         String commitName = "Merge quatrain1 and quatrain3";
 
-        origin.checkout().setName("dev").call();
+        repo.getOrigin().checkout().setName("dev").call();
 
-        ObjectId lastCommit = origin.getRepository().resolve("dev^{commit}");
-        RevWalk walker = new RevWalk(origin.getRepository());
+        ObjectId lastCommit = repo.getOrigin().getRepository().resolve("dev^{commit}");
+        RevWalk walker = new RevWalk(repo.getOrigin().getRepository());
         String lastCommitName = walker.parseCommit(lastCommit).getFullMessage();
 
         if (lastCommitName.equals(oldCommit)) {
-            origin.merge().include(origin.getRepository().findRef("quatrain3")).call();
+            repo.getOrigin().merge().include(repo.getOrigin().getRepository().findRef("quatrain3")).call();
             fixConflict(variant);
-            commit(origin, commitName);
+            commit(repo.getOrigin(), commitName);
         }
     }
 
@@ -111,15 +113,15 @@ public class Wednesday extends Day {
     }
 
     private void createBranchDev() throws GitAPIException {
-        origin.checkout().setName("quatrain1").call();
-        origin.checkout().setCreateBranch(true).setName("dev").call();
+        repo.getOrigin().checkout().setName("quatrain1").call();
+        repo.getOrigin().checkout().setCreateBranch(true).setName("dev").call();
     }
 
     private void updateStudRepository() throws GitAPIException {
-        stud.checkout().setName("quatrain1").call();
-        stud.fetch().setRemote("origin").call();
-        stud.reset().setMode(ResetCommand.ResetType.HARD).setRef("origin/quatrain1").call();
-        stud.checkout().setName("origin/dev").call();
-        stud.checkout().setName("dev").setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK).setCreateBranch(true).call();
+        repo.getStud().checkout().setName("quatrain1").call();
+        repo.getStud().fetch().setRemote("origin").call();
+        repo.getStud().reset().setMode(ResetCommand.ResetType.HARD).setRef("origin/quatrain1").call();
+        repo.getStud().checkout().setName("origin/dev").call();
+        repo.getStud().checkout().setName("dev").setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK).setCreateBranch(true).call();
     }
 }

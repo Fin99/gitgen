@@ -16,15 +16,11 @@ public class Main {
     public static void main(String[] args) throws IOException {
         String commandResult;
         while (true) {
-            switch (reader.readLine()) {
-                case "c":
-                    commandResult = bashService.executeCommand(reader.readLine(), variant);
-                    break;
-                case "p":
-                    commandResult = bashService.poem(readPoem(), variant);
-                    break;
-                default:
-                    continue;
+            String command = reader.readLine();
+            if (command.equals("p")) {
+                commandResult = bashService.poem(readPoem(), variant);
+            } else {
+                commandResult = bashService.executeCommand(command, variant);
             }
 
             System.out.println("//////////");

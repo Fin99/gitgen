@@ -13,6 +13,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 
+import static com.tuneit.gen.GitAPI.*;
+
 public class Thursday extends Day {
     @Override
     public Boolean checkTask(Variant variant) {
@@ -22,14 +24,14 @@ public class Thursday extends Day {
             }
             init(variant);
             fixBranchQuatrain2(variant);
-            boolean result = diffBetweenBranches("refs/heads/quatrain2", "refs/heads/quatrain2");
+            boolean result = diffBetweenBranches(repo, "refs/heads/quatrain2", "refs/heads/quatrain2").isEmpty();
 
             if (!result) {
-                RevWalk revWalk = new RevWalk(stud.getRepository());
-                ObjectId commitId = stud.getRepository().resolve("refs/heads/quatrain2");
+                RevWalk revWalk = new RevWalk(repo.getStud().getRepository());
+                ObjectId commitId = repo.getStud().getRepository().resolve("refs/heads/quatrain2");
                 RevCommit oldCommit = revWalk.parseCommit(commitId);
                 if (!oldCommit.getFullMessage().equals("Second quatrain is added")) {
-                    reset("quatrain2");
+                    reset(repo.getStud(), "quatrain2");
                 }
             }
 
@@ -44,15 +46,15 @@ public class Thursday extends Day {
         String oldCommit = "Second quatrain is added";
         String commitName = "Second quatrain is fixed";
 
-        origin.checkout().setName("quatrain2").call();
+        repo.getOrigin().checkout().setName("quatrain2").call();
 
-        ObjectId lastCommit = origin.getRepository().resolve("quatrain2^{commit}");
-        RevWalk walker = new RevWalk(origin.getRepository());
+        ObjectId lastCommit = repo.getOrigin().getRepository().resolve("quatrain2^{commit}");
+        RevWalk walker = new RevWalk(repo.getOrigin().getRepository());
         String lastCommitName = walker.parseCommit(lastCommit).getFullMessage();
 
         if (lastCommitName.equals(oldCommit)) {
             fixFileQuatrain2(variant.getRandom());
-            commit(origin, commitName);
+            commit(repo.getOrigin(), commitName);
         }
     }
 
@@ -82,8 +84,8 @@ public class Thursday extends Day {
     }
 
     private void updateStudRepository() throws GitAPIException {
-        stud.checkout().setName("dev").call();
-        stud.fetch().setRemote("origin").call();
-        stud.reset().setMode(ResetCommand.ResetType.HARD).setRef("origin/dev").call();
+        repo.getStud().checkout().setName("dev").call();
+        repo.getStud().fetch().setRemote("origin").call();
+        repo.getStud().reset().setMode(ResetCommand.ResetType.HARD).setRef("origin/dev").call();
     }
 }

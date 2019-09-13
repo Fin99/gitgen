@@ -12,6 +12,8 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import static com.tuneit.gen.GitAPI.*;
+
 public class Friday extends Day {
     @Override
     public Boolean checkTask(Variant variant) {
@@ -22,14 +24,14 @@ public class Friday extends Day {
             init(variant);
             mergeDevAndQuatrain2(variant);
 
-            boolean result = diffBetweenBranches("refs/heads/dev", "refs/heads/dev");
+            boolean result = diffBetweenBranches(repo, "refs/heads/dev", "refs/heads/dev").isEmpty();
 
             if (!result) {
-                RevWalk revWalk = new RevWalk(stud.getRepository());
-                ObjectId commitId = stud.getRepository().resolve("refs/heads/dev");
+                RevWalk revWalk = new RevWalk(repo.getStud().getRepository());
+                ObjectId commitId = repo.getStud().getRepository().resolve("refs/heads/dev");
                 RevCommit oldCommit = revWalk.parseCommit(commitId);
                 if (!oldCommit.getFullMessage().equals("Merge quatrain1 and quatrain3")) {
-                    reset("dev");
+                    reset(repo.getStud(), "dev");
                 }
             }
 
@@ -48,16 +50,16 @@ public class Friday extends Day {
         String oldCommit = "Merge quatrain1 and quatrain3";
         String commitName = "Merge dev and quatrain2";
 
-        origin.checkout().setName("dev").call();
+        repo.getOrigin().checkout().setName("dev").call();
 
-        ObjectId lastCommit = origin.getRepository().resolve("dev^{commit}");
-        RevWalk walker = new RevWalk(origin.getRepository());
+        ObjectId lastCommit = repo.getOrigin().getRepository().resolve("dev^{commit}");
+        RevWalk walker = new RevWalk(repo.getOrigin().getRepository());
         String lastCommitName = walker.parseCommit(lastCommit).getFullMessage();
 
         if (lastCommitName.equals(oldCommit)) {
-            origin.merge().include(origin.getRepository().findRef("quatrain2")).call();
+            repo.getOrigin().merge().include(repo.getOrigin().getRepository().findRef("quatrain2")).call();
             fixConflict(variant);
-            commit(origin, commitName);
+            commit(repo.getOrigin(), commitName);
         }
     }
 
@@ -95,8 +97,8 @@ public class Friday extends Day {
     }
 
     private void updateStudRepository() throws GitAPIException {
-        stud.checkout().setName("quatrain2").call();
-        stud.fetch().setRemote("origin").call();
-        stud.reset().setMode(ResetCommand.ResetType.HARD).setRef("origin/quatrain2").call();
+        repo.getStud().checkout().setName("quatrain2").call();
+        repo.getStud().fetch().setRemote("origin").call();
+        repo.getStud().reset().setMode(ResetCommand.ResetType.HARD).setRef("origin/quatrain2").call();
     }
 }
