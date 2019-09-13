@@ -6,8 +6,6 @@ import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.revwalk.RevWalk;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -26,7 +24,7 @@ public class Tuesday extends Day {
             }
             init(variant);
             fixBranchQuatrain1(variant);
-            List<DiffEntry> diffEntries = diffBetweenBranches(repo, "refs/heads/quatrain1", "First quatrain is fixed");
+            List<DiffEntry> diffEntries = diffBetweenBranches(repo, "quatrain1", "First quatrain is fixed");
             if (diffEntries == null) {
                 return false;
             }
@@ -49,23 +47,17 @@ public class Tuesday extends Day {
         String oldCommit = "First quatrain is added";
         String commitName = "First quatrain is fixed";
 
-        repo.getOrigin().checkout().setName("quatrain1").call();
-
-        ObjectId lastCommit = repo.getOrigin().getRepository().resolve("quatrain1^{commit}");
-        RevWalk walker = new RevWalk(repo.getOrigin().getRepository());
-        String lastCommitName = walker.parseCommit(lastCommit).getFullMessage();
-
-        if (lastCommitName.equals(oldCommit)) {
+        if (getFirstCommit(repo.getOrigin(), "quatrain1").getFullMessage().equals(oldCommit)) {
+            repo.getOrigin().checkout().setName("quatrain1").call();
             fixFileQuatrain1(variant.getRandom());
             commit(repo.getOrigin(), commitName);
         }
     }
 
     private void fixFileQuatrain1(Random random) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(poem));
-        String quatrain1 = Poems.getRandomPoem(random).getQuatrain1().trim();
-        writer.write(quatrain1);
-        writer.close();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(poem))) {
+            writer.write(Poems.getRandomPoem(random).getQuatrain1());
+        }
     }
 
     @Override
@@ -103,9 +95,8 @@ public class Tuesday extends Day {
     }
 
     private void updateFileQuatrain2(Random random) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(poem));
-        String quatrain2 = Poems.getRandomPoem(random).getQuatrain2().trim();
-        writer.write(Poems.deleteWord(quatrain2, random));
-        writer.close();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(poem))) {
+            writer.write(Poems.deleteWord(Poems.getRandomPoem(random).getQuatrain2(), random));
+        }
     }
 }

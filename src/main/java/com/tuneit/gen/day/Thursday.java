@@ -5,8 +5,6 @@ import com.tuneit.data.Variant;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.revwalk.RevWalk;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -25,7 +23,7 @@ public class Thursday extends Day {
             }
             init(variant);
             fixBranchQuatrain2(variant);
-            List<DiffEntry> diffEntries = diffBetweenBranches(repo, "refs/heads/quatrain2", "Second quatrain is fixed");
+            List<DiffEntry> diffEntries = diffBetweenBranches(repo, "quatrain2", "Second quatrain is fixed");
             if (diffEntries == null) {
                 return false;
             }
@@ -48,23 +46,17 @@ public class Thursday extends Day {
         String oldCommit = "Second quatrain is added";
         String commitName = "Second quatrain is fixed";
 
-        repo.getOrigin().checkout().setName("quatrain2").call();
-
-        ObjectId lastCommit = repo.getOrigin().getRepository().resolve("quatrain2^{commit}");
-        RevWalk walker = new RevWalk(repo.getOrigin().getRepository());
-        String lastCommitName = walker.parseCommit(lastCommit).getFullMessage();
-
-        if (lastCommitName.equals(oldCommit)) {
+        if (getFirstCommit(repo.getOrigin(), "quatrain2").getFullMessage().equals(oldCommit)) {
+            repo.getOrigin().checkout().setName("quatrain2").call();
             fixFileQuatrain2(variant.getRandom());
             commit(repo.getOrigin(), commitName);
         }
     }
 
     private void fixFileQuatrain2(Random random) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(poem));
-        String quatrain2 = Poems.getRandomPoem(random).getQuatrain2().trim();
-        writer.write(quatrain2);
-        writer.close();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(poem))) {
+            writer.write(Poems.getRandomPoem(random).getQuatrain2());
+        }
     }
 
     @Override
