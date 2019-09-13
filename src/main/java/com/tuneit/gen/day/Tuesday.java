@@ -6,7 +6,6 @@ import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 
 import java.io.BufferedWriter;
@@ -28,10 +27,7 @@ public class Tuesday extends Day {
             boolean result = diffBetweenBranches(repo, "refs/heads/quatrain1", "refs/heads/quatrain1").isEmpty();
 
             if (!result) {
-                RevWalk revWalk = new RevWalk(repo.getStud().getRepository());
-                ObjectId commitId = repo.getStud().getRepository().resolve("refs/heads/quatrain1");
-                RevCommit oldCommit = revWalk.parseCommit(commitId);
-                if (!oldCommit.getFullMessage().equals("First quatrain is added")) {
+                if (!getFirstCommit(repo.getStud(), "quatrain1").getFullMessage().equals("First quatrain is added")) {
                     reset(repo.getStud(), "quatrain1");
                 }
             }

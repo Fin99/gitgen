@@ -2,12 +2,12 @@ package com.tuneit.gen.day;
 
 import com.tuneit.data.Poems;
 import com.tuneit.data.Variant;
+import com.tuneit.gen.Repo;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.StoredConfig;
-import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.transport.URIish;
 
@@ -26,12 +26,9 @@ public class Monday extends Day {
         try {
             init(variant);
             fixBranchQuatrain3(variant);
-            boolean result = diffBetweenBranches(repo, "refs/heads/quatrain3", "refs/heads/quatrain3").isEmpty();
+            boolean result = diffBetweenBranches(repo, "refs/heads/quatrain3", "Third quatrain is fixed").isEmpty();
             if (!result) {
-                RevWalk revWalk = new RevWalk(repo.getStud().getRepository());
-                ObjectId commitId = repo.getStud().getRepository().resolve("refs/heads/quatrain3");
-                RevCommit oldCommit = revWalk.parseCommit(commitId);
-                if (!oldCommit.getFullMessage().equals("Third quatrain is added")) {
+                if (!getFirstCommit(repo.getStud(), "quatrain3").getFullMessage().equals("Third quatrain is added")) {
                     reset(repo.getStud(), "quatrain3");
                 }
             }
@@ -70,7 +67,7 @@ public class Monday extends Day {
     public void generateTask(Variant variant) {
         try {
             createOriginRepository(variant);
-            repo.setOrigin(Git.open(new File(variant.getOriginDirName())));
+            repo = new Repo(Git.open(new File(variant.getOriginDirName())), null);
             poem = new File(variant.getOriginDirName() + "/poem");
             createBranchQuatrain1(variant);
             createBranchQuatrain3(variant);

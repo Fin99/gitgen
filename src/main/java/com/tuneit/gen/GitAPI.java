@@ -5,6 +5,7 @@ import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -27,15 +28,38 @@ public class GitAPI {
         git.reset().setMode(ResetCommand.ResetType.HARD).setRef("HEAD~1").call();
     }
 
+    public static RevCommit getFirstCommit(Git git, String branchName) throws IOException {
+        RevWalk revWalk = new RevWalk(git.getRepository());
+        ObjectId commitId = git.getRepository().findRef(branchName).getObjectId();
+        return revWalk.parseCommit(commitId);
+    }
+
     public static List<DiffEntry> diffBetweenBranches(Repo repo, String branchName, String commitName) throws IOException, GitAPIException {
         try {
             AbstractTreeIterator oldTreeParser = prepareTreeParser(repo.getOrigin().getRepository(), branchName);
             AbstractTreeIterator newTreeParser = prepareTreeParser(repo.getStud().getRepository(), branchName);
 
-            return repo.getOrigin().diff().setOldTree(oldTreeParser).setNewTree(newTreeParser).call();
+            return repo.getOrigin().diff().setOldTree(newTreeParser).setNewTree(oldTreeParser).call();
         } catch (JGitInternalException fall) {
-            return null;
+            RevWalk revWalk = new RevWalk(repo.getStud().getRepository());
+            ObjectId commitId = repo.getStud().getRepository().findRef(branchName).getObjectId();
+            RevCommit oldCommit = revWalk.parseCommit(commitId);
+            revWalk.markStart(oldCommit);
+
+            RevCommit commit = revWalk.next();
+            while (commit != null && !commit.getFullMessage().equals(commitName)) {
+                commit = revWalk.next();
+            }
+
+            if (commit != null) {
+                AbstractTreeIterator oldTreeParser = prepareTreeParser(repo.getOrigin().getRepository(), branchName);
+                AbstractTreeIterator newTreeParser = prepareTreeParser(repo.getStud().getRepository(), commit.toObjectId().getName());
+
+                return repo.getOrigin().diff().setOldTree(oldTreeParser).setNewTree(newTreeParser).call();
+            }
+
         }
+        return null;
     }
 
     private static AbstractTreeIterator prepareTreeParser(Repository repository, String ref) throws IOException {

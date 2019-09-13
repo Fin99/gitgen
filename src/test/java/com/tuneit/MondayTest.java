@@ -12,10 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MondayTest extends RepoData {
 
-    {
-        variant = new Variant(1, "test", 1);
-    }
-
     @Test
     void initMondayTest() throws GitAPIException, IOException {
         taskService.generateTask(new Variant(1, variant.getUsername(), variant.getVariant()));

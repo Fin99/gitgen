@@ -23,7 +23,7 @@ abstract class RepoData {
     TaskService taskService = new TaskServiceDefault();
     GitBashService bashService = new GitBashServiceDefault();
 
-    Variant variant;
+    Variant variant = new Variant("test", 1);
 
     void initGit() throws IOException {
         gitStud = Git.open(dirStud);
@@ -37,7 +37,6 @@ abstract class RepoData {
     }
 
     void makeMonday() {
-        Variant variant = new Variant(1, "test", 1);
         log.info(bashService.executeCommand("git checkout quatrain3", variant));
         log.info(bashService.poem("Нам мнится: мир осиротелый\n" +
                 "Неотразимый Рок настиг —\n" +
@@ -48,7 +47,6 @@ abstract class RepoData {
     }
 
     void makeMondayWithError() {
-        Variant variant = new Variant(1, "test", 1);
         log.info(bashService.executeCommand("git checkout quatrain3", variant));
         log.info(bashService.poem("Нам мнится: мир осиротелый\n" +
                 "Неотразимый Рок настиг —\n" +
@@ -59,7 +57,6 @@ abstract class RepoData {
     }
 
     void makeTuesday() {
-        Variant variant = new Variant(2, "test", 1);
         log.info(bashService.executeCommand("git checkout quatrain1", variant));
         log.info(bashService.poem("Часов однообразный бой,\n" +
                 "Томительная ночи повесть!\n" +
@@ -70,7 +67,6 @@ abstract class RepoData {
     }
 
     void makeTuesdayWithError() {
-        Variant variant = new Variant(2, "test", 1);
         log.info(bashService.executeCommand("git checkout quatrain1", variant));
         log.info(bashService.poem("Часов однообразный бой,\n" +
                 "Томительная ночи повесть!\n" +
@@ -81,7 +77,6 @@ abstract class RepoData {
     }
 
     void makeWednesday() {
-        Variant variant = new Variant(3, "test", 1);
         log.info(bashService.executeCommand("git checkout dev", variant));
         log.info(bashService.executeCommand("git merge quatrain3", variant));
         log.info(bashService.poem("Часов однообразный бой,\n" +
@@ -97,7 +92,6 @@ abstract class RepoData {
     }
 
     void makeWednesdayWithError() {
-        Variant variant = new Variant(3, "test", 1);
         log.info(bashService.executeCommand("git checkout dev", variant));
         log.info(bashService.executeCommand("git merge quatrain3", variant));
         log.info(bashService.poem("Часов однообразный бой,\n" +
@@ -113,7 +107,6 @@ abstract class RepoData {
     }
 
     void makeThursday() {
-        Variant variant = new Variant(4, "test", 1);
         log.info(bashService.executeCommand("git checkout quatrain2", variant));
         log.info(bashService.poem("Кто без тоски внимал из нас,\n" +
                 "Среди всемирного молчанья,\n" +
@@ -124,7 +117,6 @@ abstract class RepoData {
     }
 
     void makeThursdayWithError() {
-        Variant variant = new Variant(4, "test", 1);
         log.info(bashService.executeCommand("git checkout quatrain2", variant));
         log.info(bashService.poem("Кто без тоски внимал из нас,\n" +
                 "Среди всемирного молчанья,\n" +
@@ -135,7 +127,6 @@ abstract class RepoData {
     }
 
     void makeFriday() {
-        Variant variant = new Variant(5, "test", 1);
         log.info(bashService.executeCommand("git checkout dev", variant));
         log.info(bashService.executeCommand("git merge quatrain2", variant));
         log.info(bashService.poem("Часов однообразный бой,\n" +
@@ -155,7 +146,6 @@ abstract class RepoData {
     }
 
     void makeFridayWithError() {
-        Variant variant = new Variant(5, "test", 1);
         log.info(bashService.executeCommand("git checkout dev", variant));
         log.info(bashService.executeCommand("git merge quatrain2", variant));
         log.info(bashService.poem("Часов однообразный бой,\n" +

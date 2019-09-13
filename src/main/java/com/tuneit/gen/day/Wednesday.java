@@ -7,7 +7,6 @@ import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 
 import java.io.BufferedWriter;
@@ -27,42 +26,15 @@ public class Wednesday extends Day {
             }
             init(variant);
             mergeQuatrain1AndQuatrain3(variant);
-            result = diffBetweenBranches(repo, "refs/heads/dev", "refs/heads/dev").isEmpty();
+            result = diffBetweenBranches(repo, "refs/heads/dev", "Merge quatrain1 and quatrain3").isEmpty();
+            if (!result) {
+                if (!getFirstCommit(repo.getStud(), "dev").getFullMessage().equals("First quatrain is fixed")) {
+                    reset(repo.getStud(), "dev");
+                }
+            }
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
         }
-
-        if (!result) {
-            try {
-                RevWalk revWalk = new RevWalk(repo.getStud().getRepository());
-                ObjectId commitId = repo.getStud().getRepository().resolve("refs/heads/dev");
-                RevCommit oldCommit = revWalk.parseCommit(commitId);
-                revWalk.markStart(oldCommit);
-
-                RevCommit commit = revWalk.next();
-                while (commit != null && !commit.getFullMessage().equals("Merge quatrain1 and quatrain3")) {
-                    commit = revWalk.next();
-                }
-
-                if (commit != null) {
-                    result = diffBetweenBranches(repo, "refs/heads/dev", commit.toObjectId().getName()).isEmpty();
-                }
-
-                if (!result) {
-                    revWalk = new RevWalk(repo.getStud().getRepository());
-                    commitId = repo.getStud().getRepository().resolve("refs/heads/dev");
-                    oldCommit = revWalk.parseCommit(commitId);
-                    if (!oldCommit.getFullMessage().equals("First quatrain is fixed")) {
-                        reset(repo.getStud(), "dev");
-                    }
-                }
-            } catch (IOException | GitAPIException e1) {
-                log.error(e1.getMessage());
-                return false;
-            }
-        }
-
-
         return result;
     }
 
