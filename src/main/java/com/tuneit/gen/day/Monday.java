@@ -2,7 +2,6 @@ package com.tuneit.gen.day;
 
 import com.tuneit.data.Poems;
 import com.tuneit.data.Variant;
-import com.tuneit.gen.Task;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -21,12 +20,11 @@ import java.util.Random;
 
 public class Monday extends Day {
     @Override
-    public Task checkTask(Variant variant) {
-        boolean result = false;
+    public Boolean checkTask(Variant variant) {
         try {
             init(variant);
             fixBranchQuatrain3(variant);
-            result = diffBetweenBranches("refs/heads/quatrain3", "refs/heads/quatrain3");
+            boolean result = diffBetweenBranches("refs/heads/quatrain3", "refs/heads/quatrain3");
             if (!result) {
                 RevWalk revWalk = new RevWalk(stud.getRepository());
                 ObjectId commitId = stud.getRepository().resolve("refs/heads/quatrain3");
@@ -36,10 +34,10 @@ public class Monday extends Day {
                 }
             }
 
-            return new Task(result, result ? null : "Вы не выполнили задачу. Злой тестер откатил репозиторий.");
+            return result;
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
-            return new Task(false, "Ошибка при работе с репозиторием");
+            return false;
         }
     }
 
@@ -67,7 +65,7 @@ public class Monday extends Day {
     }
 
     @Override
-    public Task generateTask(Variant variant) {
+    public void generateTask(Variant variant) {
         try {
             createOriginRepository(variant);
             origin = Git.open(new File(variant.getOriginDirName()));
@@ -75,10 +73,8 @@ public class Monday extends Day {
             createBranchQuatrain1(variant);
             createBranchQuatrain3(variant);
             createStudRepository(variant);
-            return new Task(true, "Задание первое: исправь ошибки в третьем абзаце.");
         } catch (GitAPIException | IOException | URISyntaxException e) {
             e.printStackTrace();
-            return new Task(false, "Ошибка при работе с репозиторием");
         }
     }
 

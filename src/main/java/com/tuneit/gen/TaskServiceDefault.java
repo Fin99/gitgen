@@ -24,12 +24,12 @@ public class TaskServiceDefault implements TaskService {
     }
 
     @Override
-    public Task generateTask(Variant variant) {
-        return getDay(variant.getDay()).generateTask(variant);
+    public void generateTask(Variant variant) {
+        getDay(variant.getDay()).generateTask(variant);
     }
 
     @Override
-    public Task checkTask(Variant variant) {
+    public Boolean checkTask(Variant variant) {
         return getDay(variant.getDay()).checkTask(variant);
     }
 

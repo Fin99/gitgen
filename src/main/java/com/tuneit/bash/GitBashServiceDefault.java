@@ -3,7 +3,6 @@ package com.tuneit.bash;
 import com.tuneit.GitBashService;
 import com.tuneit.TaskService;
 import com.tuneit.data.Variant;
-import com.tuneit.gen.Task;
 import com.tuneit.gen.TaskServiceDefault;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,7 +32,7 @@ public class GitBashServiceDefault implements GitBashService {
     }
 
     @Override
-    public CommandResult executeCommand(String line, Variant variant) {
+    public String executeCommand(String line, Variant variant) {
         updateDay(variant);
         if (variant.getDay() == 0 && !new File(variant.getStudDirName()).exists()) {
             variant.setDay(1);
@@ -41,56 +40,56 @@ public class GitBashServiceDefault implements GitBashService {
         }
         try {
             if (line == null) {
-                return new CommandResult("Empty line");
+                return "Empty line";
             }
             line = line.trim();
             if (!line.contains(" ")) {
-                return new CommandResult("Empty line");
+                return "Empty line";
             }
 
             if (line.equals("cat poem")) {
-                return new CommandResult(command("cat poem", variant));
+                return command("cat poem", variant);
             }
             if (!line.substring(0, line.indexOf(" ")).equals("git")) {
-                return new CommandResult("Command not found");
+                return "Command not found";
             }
 
             String command = line.substring(line.indexOf(" ") + 1);
 
             if (Pattern.matches("checkout (master|dev|quatrain[123])", command)) {
-                return new CommandResult(command(line, variant));
+                return command(line, variant);
             } else if (Pattern.matches("merge (master|dev|quatrain[123])", command)) {
-                return new CommandResult(command(line, variant));
+                return command(line, variant);
             } else if (Pattern.matches("commit -m \"[A-z0-9 ]*?\"", command)) {
                 String resultCommand = command(line, variant);
-                Task checkerResult = taskService.checkTask(variant);
-                if (variant.getDay() != 5 && checkerResult.getResult()) {
-                    Task generatorResult = taskService.generateTask(variant.nextDay());
-                    return new CommandResult(resultCommand, generatorResult.getTaskText());
+                Boolean checkerResult = taskService.checkTask(variant);
+                if (variant.getDay() != 5 && checkerResult) {
+                    taskService.generateTask(variant.nextDay());
+                    return resultCommand;
                 } else {
-                    return new CommandResult(resultCommand, checkerResult.getTaskText());
+                    return resultCommand;
                 }
             } else if (Pattern.matches("add (poem|\\.)", command)) {
-                return new CommandResult(command(line, variant));
+                return command(line, variant);
             } else {
-                return new CommandResult(easyCommand(command, variant));
+                return easyCommand(command, variant);
             }
         } catch (IOException e) {
             e.printStackTrace();
-            return new CommandResult("Ошибка при обработке комманды");
+            return "Ошибка при обработке комманды";
         }
     }
 
     private void updateDay(Variant variant) {
         if (!new File(variant.getStudDirName()).exists()) {
             variant.setDay(0);
-        } else if (taskService.checkTask(new Variant(4, variant.getUsername(), variant.getVariant())).getResult()) {
+        } else if (taskService.checkTask(new Variant(4, variant.getUsername(), variant.getVariant()))) {
             variant.setDay(5);
-        } else if (taskService.checkTask(new Variant(3, variant.getUsername(), variant.getVariant())).getResult()) {
+        } else if (taskService.checkTask(new Variant(3, variant.getUsername(), variant.getVariant()))) {
             variant.setDay(4);
-        } else if (taskService.checkTask(new Variant(2, variant.getUsername(), variant.getVariant())).getResult()) {
+        } else if (taskService.checkTask(new Variant(2, variant.getUsername(), variant.getVariant()))) {
             variant.setDay(3);
-        } else if (taskService.checkTask(new Variant(1, variant.getUsername(), variant.getVariant())).getResult()) {
+        } else if (taskService.checkTask(new Variant(1, variant.getUsername(), variant.getVariant()))) {
             variant.setDay(2);
         } else {
             variant.setDay(1);

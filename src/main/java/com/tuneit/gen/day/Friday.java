@@ -2,7 +2,6 @@ package com.tuneit.gen.day;
 
 import com.tuneit.data.Poems;
 import com.tuneit.data.Variant;
-import com.tuneit.gen.Task;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
@@ -15,10 +14,10 @@ import java.io.IOException;
 
 public class Friday extends Day {
     @Override
-    public Task checkTask(Variant variant) {
+    public Boolean checkTask(Variant variant) {
         try {
-            if (!new Thursday().checkTask(variant).getResult()) {
-                return new Task(false, "Ошибка при проверке предыдущего репозитория");
+            if (!new Thursday().checkTask(variant)) {
+                return false;
             }
             init(variant);
             mergeDevAndQuatrain2(variant);
@@ -38,10 +37,10 @@ public class Friday extends Day {
                 removeRepo(variant);
             }
 
-            return new Task(result, result ? null : "Вы не выполнили задачу. Злой тестер откатил репозиторий.");
+            return result;
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
-            return new Task(false, "Ошибка при работе с репозиторием");
+            return false;
         }
     }
 
@@ -78,17 +77,15 @@ public class Friday extends Day {
     }
 
     @Override
-    public Task generateTask(Variant variant) {
+    public void generateTask(Variant variant) {
         try {
-            if (!new Thursday().checkTask(variant).getResult()) {
-                return new Task(false, "Ошибка при проверке предыдущего репозитория");
+            if (!new Thursday().checkTask(variant)) {
+                return;
             }
             init(variant);
             updateStudRepository();
-            return new Task(true, "Задание пятое: присоедините тертий абзац к ветке dev.");
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
-            return new Task(false, "Ошибка при работе с репозиторием");
         }
     }
 

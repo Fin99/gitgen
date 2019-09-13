@@ -1,7 +1,6 @@
 package com.tuneit.gen.day;
 
 import com.tuneit.data.Variant;
-import com.tuneit.gen.Task;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
@@ -25,9 +24,9 @@ public abstract class Day {
     Git stud;
     File poem;
 
-    public abstract Task checkTask(Variant variant);
+    public abstract Boolean checkTask(Variant variant);
 
-    public abstract Task generateTask(Variant variant);
+    public abstract void generateTask(Variant variant);
 
     public abstract String getTaskText();
 

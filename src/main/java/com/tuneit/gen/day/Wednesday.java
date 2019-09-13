@@ -2,7 +2,7 @@ package com.tuneit.gen.day;
 
 import com.tuneit.data.Poems;
 import com.tuneit.data.Variant;
-import com.tuneit.gen.Task;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -14,13 +14,14 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
+@Slf4j
 public class Wednesday extends Day {
     @Override
-    public Task checkTask(Variant variant) {
+    public Boolean checkTask(Variant variant) {
         boolean result = false;
         try {
-            if (!new Tuesday().checkTask(variant).getResult()) {
-                return new Task(false, "Ошибка при проверке предыдущего репозитория");
+            if (!new Tuesday().checkTask(variant)) {
+                return false;
             }
             init(variant);
             mergeQuatrain1AndQuatrain3(variant);
@@ -54,13 +55,13 @@ public class Wednesday extends Day {
                     }
                 }
             } catch (IOException | GitAPIException e1) {
-                e1.printStackTrace();
-                return new Task(false, "Ошибка при работе с репозиторием");
+                log.error(e1.getMessage());
+                return false;
             }
         }
 
 
-        return new Task(result, result ? null : "Вы не выполнили задачу. Злой тестер откатил репозиторий.");
+        return result;
     }
 
     private void mergeQuatrain1AndQuatrain3(Variant variant) throws GitAPIException, IOException {
@@ -91,18 +92,16 @@ public class Wednesday extends Day {
     }
 
     @Override
-    public Task generateTask(Variant variant) {
+    public void generateTask(Variant variant) {
         try {
-            if (!new Tuesday().checkTask(variant).getResult()) {
-                return new Task(false, "Ошибка при проверке предыдущего репозитория");
+            if (!new Tuesday().checkTask(variant)) {
+                return;
             }
             init(variant);
             createBranchDev();
             updateStudRepository();
-            return new Task(true, "Задание третье: соедините первый и второй абзац в ветку dev");
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
-            return new Task(false, "Ошибка при работе с репозиторием");
         }
     }
 

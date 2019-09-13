@@ -2,7 +2,6 @@ package com.tuneit.gen.day;
 
 import com.tuneit.data.Poems;
 import com.tuneit.data.Variant;
-import com.tuneit.gen.Task;
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -17,15 +16,14 @@ import java.util.Random;
 
 public class Tuesday extends Day {
     @Override
-    public Task checkTask(Variant variant) {
-        boolean result = false;
+    public Boolean checkTask(Variant variant) {
         try {
-            if (!new Monday().checkTask(variant).getResult()) {
-                return new Task(false, "Ошибка при проверке предыдущего репозитория");
+            if (!new Monday().checkTask(variant)) {
+                return false;
             }
             init(variant);
             fixBranchQuatrain1(variant);
-            result = diffBetweenBranches("refs/heads/quatrain1", "refs/heads/quatrain1");
+            boolean result = diffBetweenBranches("refs/heads/quatrain1", "refs/heads/quatrain1");
 
             if (!result) {
                 RevWalk revWalk = new RevWalk(stud.getRepository());
@@ -36,10 +34,10 @@ public class Tuesday extends Day {
                 }
             }
 
-            return new Task(result, result ? null : "Вы не выполнили задачу. Злой тестер откатил репозиторий.");
+            return result;
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
-            return new Task(false, "Ошибка при работе с репозиторием");
+            return false;
         }
     }
 
@@ -67,18 +65,16 @@ public class Tuesday extends Day {
     }
 
     @Override
-    public Task generateTask(Variant variant) {
+    public void generateTask(Variant variant) {
         try {
-            if (!new Monday().checkTask(variant).getResult()) {
-                return new Task(false, "Ошибка при проверке предыдущего репозитория");
+            if (!new Monday().checkTask(variant)) {
+                return;
             }
             init(variant);
             createBranchQuatrain2(variant);
             updateStudRepository();
-            return new Task(true, "Задание второе: исправь ошибки в первом абзаце.");
         } catch (IOException | GitAPIException e) {
             e.printStackTrace();
-            return new Task(false, "Ошибка при работе с репозиторием");
         }
     }
 

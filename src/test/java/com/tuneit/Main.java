@@ -1,6 +1,5 @@
 package com.tuneit;
 
-import com.tuneit.bash.CommandResult;
 import com.tuneit.bash.GitBashServiceDefault;
 import com.tuneit.data.Variant;
 
@@ -19,8 +18,7 @@ public class Main {
         while (true) {
             switch (reader.readLine()) {
                 case "c":
-                    CommandResult command = bashService.executeCommand(reader.readLine(), variant);
-                    commandResult = command.getCommandResult();
+                    commandResult = bashService.executeCommand(reader.readLine(), variant);
                     break;
                 case "p":
                     commandResult = bashService.poem(readPoem(), variant);
