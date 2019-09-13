@@ -25,7 +25,7 @@ public class Thursday extends Day {
             }
             init(variant);
             fixBranchQuatrain2(variant);
-            List<DiffEntry> diffEntries = diffBetweenBranches(repo, "refs/heads/quatrain2", "refs/heads/quatrain2");
+            List<DiffEntry> diffEntries = diffBetweenBranches(repo, "refs/heads/quatrain2", "Second quatrain is fixed");
             if (diffEntries == null) {
                 return false;
             }

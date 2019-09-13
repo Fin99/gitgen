@@ -5,6 +5,7 @@ import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
@@ -35,28 +36,32 @@ public class GitAPI {
     }
 
     public static List<DiffEntry> diffBetweenBranches(Repo repo, String branchName, String commitName) throws IOException, GitAPIException {
+        RevCommit originCommit = findCommit(repo.getOrigin(), branchName, commitName);
+
         try {
-            AbstractTreeIterator oldTreeParser = prepareTreeParser(repo.getOrigin().getRepository(), branchName);
+            AbstractTreeIterator oldTreeParser = prepareTreeParser(repo.getOrigin().getRepository(), originCommit.toObjectId().getName());
             AbstractTreeIterator newTreeParser = prepareTreeParser(repo.getStud().getRepository(), branchName);
 
-            List<DiffEntry> call = repo.getOrigin().diff().setOldTree(newTreeParser).setNewTree(oldTreeParser).call();
-            if (call.isEmpty()) {
-                return call;
+            List<DiffEntry> diff = repo.getOrigin().diff().setOldTree(newTreeParser).setNewTree(oldTreeParser).call();
+            if (diff.isEmpty()) {
+                return diff;
             }
         } catch (JGitInternalException ignored) {
 
         }
 
-        RevCommit originCommit = findCommit(repo.getOrigin(), branchName, commitName);
         RevCommit studCommit = findCommit(repo.getOrigin(), branchName, commitName);
-
-        if (studCommit != null) {
+        if (studCommit == null) {
+            return null;
+        }
+        try {
             AbstractTreeIterator oldTreeParser = prepareTreeParser(repo.getOrigin().getRepository(), originCommit.toObjectId().getName());
             AbstractTreeIterator newTreeParser = prepareTreeParser(repo.getStud().getRepository(), studCommit.toObjectId().getName());
 
             return repo.getOrigin().diff().setOldTree(oldTreeParser).setNewTree(newTreeParser).call();
+        } catch (MissingObjectException | JGitInternalException ignored) {
+            return null;
         }
-        return null;
     }
 
     private static RevCommit findCommit(Git origin, String branchName, String commitName) throws IOException {

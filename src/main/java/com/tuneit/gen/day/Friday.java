@@ -25,7 +25,7 @@ public class Friday extends Day {
             init(variant);
             mergeDevAndQuatrain2(variant);
 
-            List<DiffEntry> diffEntries = diffBetweenBranches(repo, "refs/heads/dev", "refs/heads/dev");
+            List<DiffEntry> diffEntries = diffBetweenBranches(repo, "refs/heads/dev", "Merge dev and quatrain2");
             if (diffEntries == null) {
                 return false;
             }
