@@ -125,8 +125,11 @@ public class GitBashServiceDefault implements GitBashService {
         String resultLine = reader.readLine();
         if (resultLine != null) {
             while (resultLine != null) {
-                result.append(resultLine).append("\n");
+                result.append(resultLine);
                 resultLine = reader.readLine();
+                if (resultLine != null) {
+                    result.append("\n");
+                }
             }
         }
 

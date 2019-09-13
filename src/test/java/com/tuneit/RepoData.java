@@ -39,7 +39,6 @@ abstract class RepoData {
 
     void makeMonday() {
         Variant variant = new Variant(1, "test", 1);
-        bashService.init(variant);
         log.info(bashService.executeCommand("git checkout quatrain3", variant).getCommandResult());
         log.info(bashService.poem("Нам мнится: мир осиротелый\n" +
                 "Неотразимый Рок настиг —\n" +

@@ -9,38 +9,41 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
+
+    private static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+    private static Variant variant = new Variant(null, "alexandr", 1);
+    private static GitBashService bashService = new GitBashServiceDefault();
+
     public static void main(String[] args) throws IOException {
-        String username = "alexandr";
-        int variantTask = 1;
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        String buf = "";
-        String task = "";
-        String commandResult = "";
-        Variant variant = new Variant(null, username, variantTask);
+        String commandResult;
         while (true) {
-            GitBashService bashService = new GitBashServiceDefault();
-            task = bashService.getTask(variant);
             switch (reader.readLine()) {
                 case "c":
                     CommandResult command = bashService.executeCommand(reader.readLine(), variant);
                     commandResult = command.getCommandResult();
-                    task = command.getTask() == null ? task : task + "\n" + command.getTask();
                     break;
                 case "p":
-                    String line = reader.readLine();
-                    while (!line.equals("\ne")) {
-                        buf += line;
-                        line = "\n" + reader.readLine();
-                    }
-                    commandResult = bashService.poem(buf, variant);
-                    buf = "";
+                    commandResult = bashService.poem(readPoem(), variant);
                     break;
+                default:
+                    continue;
             }
 
-            System.out.println(task.trim());
+            System.out.println("//////////");
+            System.out.println(bashService.getTask(variant));
             System.out.println("----------");
-            System.out.println(commandResult.trim());
-            System.out.println();
+            System.out.println(commandResult);
+            System.out.println("//////////");
         }
+    }
+
+    private static String readPoem() throws IOException {
+        StringBuilder buf = new StringBuilder();
+        String line = reader.readLine();
+        while (!line.equals("\ne")) {
+            buf.append(line);
+            line = "\n" + reader.readLine();
+        }
+        return buf.toString();
     }
 }
