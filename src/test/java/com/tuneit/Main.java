@@ -2,7 +2,7 @@ package com.tuneit;
 
 import com.tuneit.bash.CommandResult;
 import com.tuneit.bash.GitBashServiceDefault;
-import com.tuneit.gen.Variant;
+import com.tuneit.data.Variant;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,7 +1,7 @@
 package com.tuneit;
 
 import com.tuneit.bash.CommandResult;
-import com.tuneit.gen.Variant;
+import com.tuneit.data.Variant;
 
 public interface GitBashService {
     CommandResult executeCommand(String command, Variant variant);

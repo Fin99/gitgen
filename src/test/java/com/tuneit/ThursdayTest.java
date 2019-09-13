@@ -1,6 +1,6 @@
 package com.tuneit;
 
-import com.tuneit.gen.Variant;
+import com.tuneit.data.Variant;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

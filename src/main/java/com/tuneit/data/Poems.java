@@ -1,4 +1,4 @@
-package com.tuneit.gen;
+package com.tuneit.data;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

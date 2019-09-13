@@ -1,7 +1,7 @@
 package com.tuneit.gen.day;
 
+import com.tuneit.data.Variant;
 import com.tuneit.gen.Task;
-import com.tuneit.gen.Variant;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;

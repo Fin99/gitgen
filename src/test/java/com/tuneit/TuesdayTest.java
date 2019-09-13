@@ -1,6 +1,6 @@
 package com.tuneit;
 
-import com.tuneit.gen.Variant;
+import com.tuneit.data.Variant;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;

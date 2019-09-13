@@ -1,6 +1,7 @@
 package com.tuneit.gen;
 
 import com.tuneit.TaskService;
+import com.tuneit.data.Variant;
 import com.tuneit.gen.day.*;
 
 public class TaskServiceDefault implements TaskService {

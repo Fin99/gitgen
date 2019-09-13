@@ -1,8 +1,8 @@
 package com.tuneit.gen.day;
 
-import com.tuneit.gen.Poems;
+import com.tuneit.data.Poems;
+import com.tuneit.data.Variant;
 import com.tuneit.gen.Task;
-import com.tuneit.gen.Variant;
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
