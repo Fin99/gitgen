@@ -1,7 +1,6 @@
 package com.tuneit;
 
 import com.tuneit.bash.CommandResult;
-import com.tuneit.gen.Task;
 import com.tuneit.gen.Variant;
 
 public interface GitBashService {
@@ -9,7 +8,5 @@ public interface GitBashService {
 
     String poem(String poem, Variant variant);
 
-    Integer getDay(Variant variant);
-
-    Task init(Variant variant);
+    String getTask(Variant variant);
 }

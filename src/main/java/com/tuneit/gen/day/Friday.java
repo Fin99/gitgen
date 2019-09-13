@@ -92,6 +92,11 @@ public class Friday extends Day {
         }
     }
 
+    @Override
+    public String getTaskText() {
+        return "Задание пятое: присоедините тертий абзац к ветке dev.";
+    }
+
     private void updateStudRepository() throws GitAPIException {
         stud.checkout().setName("quatrain2").call();
         stud.fetch().setRemote("origin").call();

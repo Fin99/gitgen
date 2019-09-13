@@ -82,6 +82,11 @@ public class Tuesday extends Day {
         }
     }
 
+    @Override
+    public String getTaskText() {
+        return "Задание второе: исправь ошибки в первом абзаце.";
+    }
+
     private void createBranchQuatrain2(Variant variant) throws IOException, GitAPIException {
         origin.checkout().setName("master").call();
         origin.checkout().setCreateBranch(true).setName("quatrain2").call();

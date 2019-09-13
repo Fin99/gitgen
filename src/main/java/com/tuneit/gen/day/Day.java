@@ -1,7 +1,6 @@
 package com.tuneit.gen.day;
 
-import com.tuneit.gen.TaskChecker;
-import com.tuneit.gen.TaskGen;
+import com.tuneit.gen.Task;
 import com.tuneit.gen.Variant;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
@@ -21,10 +20,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public abstract class Day implements TaskChecker, TaskGen {
+public abstract class Day {
     Git origin;
     Git stud;
     File poem;
+
+    public abstract Task checkTask(Variant variant);
+
+    public abstract Task generateTask(Variant variant);
+
+    public abstract String getTaskText();
 
     void init(Variant variant) throws IOException {
         origin = Git.open(new File(variant.getOriginDirName()));

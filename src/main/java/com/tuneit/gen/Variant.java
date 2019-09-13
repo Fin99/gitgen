@@ -2,16 +2,19 @@ package com.tuneit.gen;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Random;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class Variant {
     private Integer day; // from 1 to 7
+    @NonNull
     private String username;
+    @NonNull
     private Integer variant;
 
     public Random getRandom() {

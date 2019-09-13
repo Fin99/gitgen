@@ -27,34 +27,16 @@ public class GitBashServiceDefault implements GitBashService {
     }
 
     @Override
-    public Integer getDay(Variant variant) {
-        if (!new File(variant.getStudDirName()).exists()) {
-            return 0;
-        } else if (taskService.checkTask(new Variant(4, variant.getUsername(), variant.getVariant())).getResult()) {
-            return 5;
-        } else if (taskService.checkTask(new Variant(3, variant.getUsername(), variant.getVariant())).getResult()) {
-            return 4;
-        } else if (taskService.checkTask(new Variant(2, variant.getUsername(), variant.getVariant())).getResult()) {
-            return 3;
-        } else if (taskService.checkTask(new Variant(1, variant.getUsername(), variant.getVariant())).getResult()) {
-            return 2;
-        } else {
-            return 1;
-        }
-    }
-
-    @Override
-    public Task init(Variant variant) {
-        if (variant.getDay() == 0 && !new File(variant.getStudDirName()).exists()) {
-            variant.setDay(1);
-            return taskService.generateTask(variant);
-        }
-        return null;
+    public String getTask(Variant variant) {
+        updateDay(variant);
+        return taskService.getTaskText(variant);
     }
 
     @Override
     public CommandResult executeCommand(String line, Variant variant) {
-        if (variant.getDay() == 1 && !new File(variant.getStudDirName()).exists()) {
+        updateDay(variant);
+        if (variant.getDay() == 0 && !new File(variant.getStudDirName()).exists()) {
+            variant.setDay(1);
             taskService.generateTask(variant);
         }
         try {
@@ -96,6 +78,22 @@ public class GitBashServiceDefault implements GitBashService {
         } catch (IOException e) {
             e.printStackTrace();
             return new CommandResult("Ошибка при обработке комманды");
+        }
+    }
+
+    private void updateDay(Variant variant) {
+        if (!new File(variant.getStudDirName()).exists()) {
+            variant.setDay(0);
+        } else if (taskService.checkTask(new Variant(4, variant.getUsername(), variant.getVariant())).getResult()) {
+            variant.setDay(5);
+        } else if (taskService.checkTask(new Variant(3, variant.getUsername(), variant.getVariant())).getResult()) {
+            variant.setDay(4);
+        } else if (taskService.checkTask(new Variant(2, variant.getUsername(), variant.getVariant())).getResult()) {
+            variant.setDay(3);
+        } else if (taskService.checkTask(new Variant(1, variant.getUsername(), variant.getVariant())).getResult()) {
+            variant.setDay(2);
+        } else {
+            variant.setDay(1);
         }
     }
 

@@ -82,6 +82,11 @@ public class Monday extends Day {
         }
     }
 
+    @Override
+    public String getTaskText() {
+        return "Задание первое: исправь ошибки в третьем абзаце.";
+    }
+
     private void createOriginRepository(Variant variant) throws GitAPIException, IOException {
         File originDir = new File(variant.getOriginDirName());
         boolean mkdir = originDir.mkdir();

@@ -16,34 +16,30 @@ public class Main {
         String buf = "";
         String task = "";
         String commandResult = "";
+        Variant variant = new Variant(null, username, variantTask);
         while (true) {
             GitBashService bashService = new GitBashServiceDefault();
-            Variant variant = new Variant(null, username, variantTask);
-            int day = bashService.getDay(variant);
-            variant.setDay(day);
-            System.out.println(day);
-            if (day == 0) {
-                task = bashService.init(variant).getTaskText();
-                commandResult = "empty";
-            } else {
-                switch (reader.readLine()) {
-                    case "c":
-                        CommandResult command = bashService.executeCommand(reader.readLine(), variant);
-                        commandResult = command.getCommandResult();
-                        task = command.getTask() == null ? task : command.getTask();
-                        break;
-                    case "p":
-                        buf += reader.readLine();
-                        break;
-                    case "e":
-                        commandResult = bashService.poem(buf, variant);
-                        buf = "";
-                        break;
-                }
+            task = bashService.getTask(variant);
+            switch (reader.readLine()) {
+                case "c":
+                    CommandResult command = bashService.executeCommand(reader.readLine(), variant);
+                    commandResult = command.getCommandResult();
+                    task = command.getTask() == null ? task : task + "\n" + command.getTask();
+                    break;
+                case "p":
+                    String line = reader.readLine();
+                    while (!line.equals("\ne")) {
+                        buf += line;
+                        line = "\n" + reader.readLine();
+                    }
+                    commandResult = bashService.poem(buf, variant);
+                    buf = "";
+                    break;
             }
-            System.out.println(task);
+
+            System.out.println(task.trim());
             System.out.println("----------");
-            System.out.println(commandResult);
+            System.out.println(commandResult.trim());
             System.out.println();
         }
     }

@@ -80,6 +80,11 @@ public class Thursday extends Day {
         }
     }
 
+    @Override
+    public String getTaskText() {
+        return "Задание четвертое: исправь ошибки во втором абзаце.";
+    }
+
     private void updateStudRepository() throws GitAPIException {
         stud.checkout().setName("dev").call();
         stud.fetch().setRemote("origin").call();

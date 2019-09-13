@@ -106,6 +106,11 @@ public class Wednesday extends Day {
         }
     }
 
+    @Override
+    public String getTaskText() {
+        return "Задание третье: соедините первый и второй абзац в ветку dev";
+    }
+
     private void createBranchDev() throws GitAPIException {
         origin.checkout().setName("quatrain1").call();
         origin.checkout().setCreateBranch(true).setName("dev").call();

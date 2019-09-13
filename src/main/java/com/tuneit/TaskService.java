@@ -7,4 +7,6 @@ public interface TaskService {
     Task generateTask(Variant variant);
 
     Task checkTask(Variant variant);
+
+    String getTaskText(Variant variant);
 }
