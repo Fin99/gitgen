@@ -16,6 +16,7 @@ import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class GitAPI {
@@ -27,6 +28,13 @@ public class GitAPI {
     public static void reset(Git git, String branchName) throws GitAPIException {
         git.checkout().setName(branchName).call();
         git.reset().setMode(ResetCommand.ResetType.HARD).setRef("HEAD~1").call();
+    }
+
+    public static void pull(Git git, String... branchName) throws GitAPIException {
+        git.fetch().setForceUpdate(true).setRefSpecs(
+                Arrays.stream(branchName).map(branch -> "refs/heads/" + branch + ":refs/remotes/origin/" + branch).toArray(String[]::new))
+                .call();
+        git.reset().setRef("origin/" + branchName[0]).setMode(ResetCommand.ResetType.HARD).call();
     }
 
     public static RevCommit getFirstCommit(Git git, String branchName) throws IOException {

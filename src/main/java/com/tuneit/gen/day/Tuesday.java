@@ -2,8 +2,6 @@ package com.tuneit.gen.day;
 
 import com.tuneit.data.Poems;
 import com.tuneit.data.Variant;
-import org.eclipse.jgit.api.CreateBranchCommand;
-import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 
@@ -83,11 +81,12 @@ public class Tuesday extends Day {
     }
 
     private void updateStudRepository() throws GitAPIException {
-        repo.getStud().checkout().setName("quatrain3").call();
-        repo.getStud().fetch().setRemote("origin").call();
-        repo.getStud().reset().setMode(ResetCommand.ResetType.HARD).setRef("origin/quatrain3").call();
-        repo.getStud().checkout().setName("origin/quatrain2").call();
-        repo.getStud().checkout().setName("quatrain2").setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK).setCreateBranch(true).call();
+        pull(repo.getStud(), "quatrain3", "master", "quatrain1", "quatrain2");
+//        repo.getStud().checkout().setName("quatrain3").call();
+//        repo.getStud().fetch().setRemote("origin").call();
+//        repo.getStud().reset().setMode(ResetCommand.ResetType.HARD).setRef("origin/quatrain3").call();
+//        repo.getStud().checkout().setName("origin/quatrain2").call();
+//        repo.getStud().checkout().setName("quatrain2").setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK).setCreateBranch(true).call();
     }
 
     private void updateFileQuatrain2(Random random) throws IOException {
