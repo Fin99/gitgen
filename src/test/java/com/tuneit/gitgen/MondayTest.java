@@ -1,6 +1,6 @@
-package com.tuneit;
+package com.tuneit.gitgen;
 
-import com.tuneit.data.Variant;
+import com.tuneit.gitgen.data.Variant;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.junit.jupiter.api.Test;

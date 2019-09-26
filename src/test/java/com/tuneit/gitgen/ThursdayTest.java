@@ -1,4 +1,4 @@
-package com.tuneit;
+package com.tuneit.gitgen;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.tuneit.gen;
+package com.tuneit.gitgen.gen;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;

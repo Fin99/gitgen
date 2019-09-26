@@ -1,4 +1,4 @@
-package com.tuneit.data;
+package com.tuneit.gitgen.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

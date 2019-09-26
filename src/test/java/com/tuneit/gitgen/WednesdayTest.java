@@ -1,4 +1,4 @@
-package com.tuneit;
+package com.tuneit.gitgen;
 
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;

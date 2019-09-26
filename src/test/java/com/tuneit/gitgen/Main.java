@@ -1,7 +1,7 @@
-package com.tuneit;
+package com.tuneit.gitgen;
 
-import com.tuneit.bash.GitBashServiceDefault;
-import com.tuneit.data.Variant;
+import com.tuneit.gitgen.bash.GitBashServiceDefault;
+import com.tuneit.gitgen.data.Variant;
 
 import java.io.BufferedReader;
 import java.io.IOException;

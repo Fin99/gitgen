@@ -1,6 +1,6 @@
-package com.tuneit;
+package com.tuneit.gitgen;
 
-import com.tuneit.data.Variant;
+import com.tuneit.gitgen.data.Variant;
 
 public interface GitBashService {
     String executeCommand(String command, Variant variant);

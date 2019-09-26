@@ -1,7 +1,7 @@
-package com.tuneit.gen.day;
+package com.tuneit.gitgen.gen.day;
 
-import com.tuneit.data.Poems;
-import com.tuneit.data.Variant;
+import com.tuneit.gitgen.data.Poems;
+import com.tuneit.gitgen.data.Variant;
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
-import static com.tuneit.gen.GitAPI.*;
+import static com.tuneit.gitgen.gen.GitAPI.*;
 
 public class Tuesday extends Day {
     @Override

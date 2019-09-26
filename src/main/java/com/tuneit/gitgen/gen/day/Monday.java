@@ -1,8 +1,8 @@
-package com.tuneit.gen.day;
+package com.tuneit.gitgen.gen.day;
 
-import com.tuneit.data.Poems;
-import com.tuneit.data.Variant;
-import com.tuneit.gen.Repo;
+import com.tuneit.gitgen.data.Poems;
+import com.tuneit.gitgen.data.Variant;
+import com.tuneit.gitgen.gen.Repo;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -18,7 +18,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Random;
 
-import static com.tuneit.gen.GitAPI.*;
+import static com.tuneit.gitgen.gen.GitAPI.*;
 
 public class Monday extends Day {
     @Override

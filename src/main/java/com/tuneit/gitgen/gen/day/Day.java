@@ -1,7 +1,7 @@
-package com.tuneit.gen.day;
+package com.tuneit.gitgen.gen.day;
 
-import com.tuneit.data.Variant;
-import com.tuneit.gen.Repo;
+import com.tuneit.gitgen.data.Variant;
+import com.tuneit.gitgen.gen.Repo;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 

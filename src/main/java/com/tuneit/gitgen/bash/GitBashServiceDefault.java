@@ -1,9 +1,9 @@
-package com.tuneit.bash;
+package com.tuneit.gitgen.bash;
 
-import com.tuneit.GitBashService;
-import com.tuneit.TaskService;
-import com.tuneit.data.Variant;
-import com.tuneit.gen.TaskServiceDefault;
+import com.tuneit.gitgen.GitBashService;
+import com.tuneit.gitgen.TaskService;
+import com.tuneit.gitgen.data.Variant;
+import com.tuneit.gitgen.gen.TaskServiceDefault;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;

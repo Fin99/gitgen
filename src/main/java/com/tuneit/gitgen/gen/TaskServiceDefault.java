@@ -1,8 +1,9 @@
-package com.tuneit.gen;
+package com.tuneit.gitgen.gen;
 
-import com.tuneit.TaskService;
-import com.tuneit.data.Variant;
+import com.tuneit.gitgen.TaskService;
+import com.tuneit.gitgen.data.Variant;
 import com.tuneit.gen.day.*;
+import com.tuneit.gitgen.gen.day.*;
 
 public class TaskServiceDefault implements TaskService {
 
