@@ -77,7 +77,7 @@ public class Wednesday extends Day {
 
     @Override
     public String getTaskText() {
-        return "Задание третье: соедините первый и второй абзац в ветку dev";
+        return "Задание третье: соедините первый и третий абзац в ветку dev";
     }
 
     private void createBranchDev() throws GitAPIException {
