@@ -5,11 +5,13 @@ import com.tuneit.gitgen.TaskService;
 import com.tuneit.gitgen.data.Variant;
 import com.tuneit.gitgen.gen.TaskServiceDefault;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.util.regex.Pattern;
 
 @Slf4j
+@Component
 public class GitBashServiceDefault implements GitBashService {
     private TaskService taskService = new TaskServiceDefault();
 
@@ -28,6 +30,10 @@ public class GitBashServiceDefault implements GitBashService {
     @Override
     public String getTask(Variant variant) {
         updateDay(variant);
+        if (variant.getDay() == 0 && !new File(variant.getStudDirName()).exists()) {
+            variant.setDay(1);
+            taskService.generateTask(variant);
+        }
         return taskService.getTaskText(variant);
     }
 
