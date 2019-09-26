@@ -12,13 +12,9 @@ class FridayTest extends RepoData {
     @BeforeEach
     void createTask() {
         makeMonday();
-        variant.setDay(2);
         makeTuesday();
-        variant.setDay(3);
         makeWednesday();
-        variant.setDay(4);
         makeThursday();
-        variant.setDay(5);
     }
 
     @Test

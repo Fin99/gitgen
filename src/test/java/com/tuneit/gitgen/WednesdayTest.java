@@ -15,9 +15,7 @@ class WednesdayTest extends RepoData {
     @BeforeEach
     void createTask() {
         makeMonday();
-        variant.setDay(2);
         makeTuesday();
-        variant.setDay(3);
     }
 
     @Test
