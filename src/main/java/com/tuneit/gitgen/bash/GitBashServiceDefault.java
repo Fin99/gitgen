@@ -49,7 +49,7 @@ public class GitBashServiceDefault implements GitBashService {
                 return "Empty line";
             }
             line = line.trim();
-            if (!line.contains(" ")) {
+            if (line.equals("")) {
                 return "Empty line";
             }
 
