@@ -66,7 +66,7 @@ public class GitBashServiceDefault implements GitBashService {
                 return command(line, variant);
             } else if (Pattern.matches("merge (master|dev|quatrain[123])", command)) {
                 return command(line, variant);
-            } else if (Pattern.matches("commit -m \"[A-z0-9 ]*?\"", command)) {
+            } else if (Pattern.matches("commit -m [\"'][A-z0-9 ]*?[\"']", command)) {
                 String resultCommand = command(line, variant);
                 Boolean checkerResult = taskService.checkTask(variant);
                 if (variant.getDay() != 5 && checkerResult) {
