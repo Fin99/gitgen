@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class FridayTest extends RepoData {
     @BeforeEach
@@ -20,27 +19,21 @@ class FridayTest extends RepoData {
     @Test
     void checkTest() {
         makeFriday();
-
-        assertFalse(new File(variant.getStudDirName()).exists());
-        assertFalse(new File(variant.getOriginDirName()).exists());
+        assertEquals(6 ,bashService.getDay(variant));
     }
 
     @Test
     void checkErrorTest() {
         makeFridayWithError();
-
-        assertTrue(new File(variant.getStudDirName()).exists());
-        assertTrue(new File(variant.getOriginDirName()).exists());
+        assertEquals(5, bashService.getDay(variant));
     }
 
     @Test
     void checkCorrectionTest() {
         makeFridayWithError();
-        assertTrue(new File(variant.getStudDirName()).exists());
-        assertTrue(new File(variant.getOriginDirName()).exists());
+        assertEquals(5, bashService.getDay(variant));
 
         makeFriday();
-        assertFalse(new File(variant.getStudDirName()).exists());
-        assertFalse(new File(variant.getOriginDirName()).exists());
+        assertEquals(6, bashService.getDay(variant));
     }
 }

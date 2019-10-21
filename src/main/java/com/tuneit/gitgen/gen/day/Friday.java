@@ -32,10 +32,6 @@ public class Friday extends Day {
                 }
             }
 
-            if (result) {
-                removeRepo(variant);
-            }
-
             return result;
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();

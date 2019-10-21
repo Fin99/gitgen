@@ -33,8 +33,17 @@ public class GitBashServiceDefault implements GitBashService {
         if (variant.getDay() == 0 && !new File(variant.getStudDirName()).exists()) {
             variant.setDay(1);
             taskService.generateTask(variant);
+        } else if (variant.getDay() == 6) {
+            return "Готово!";
         }
         return taskService.getTaskText(variant);
+
+    }
+
+    @Override
+    public Integer getDay(Variant variant) {
+        updateDay(variant);
+        return variant.getDay();
     }
 
     @Override
@@ -43,7 +52,10 @@ public class GitBashServiceDefault implements GitBashService {
         if (variant.getDay() == 0 && !new File(variant.getStudDirName()).exists()) {
             variant.setDay(1);
             taskService.generateTask(variant);
+        } else if (variant.getDay() == 6) {
+            return "Вы прошли все задания.";
         }
+
         try {
             if (line == null) {
                 return "Empty line";
@@ -89,6 +101,8 @@ public class GitBashServiceDefault implements GitBashService {
     private void updateDay(Variant variant) {
         if (!new File(variant.getStudDirName()).exists()) {
             variant.setDay(0);
+        } else if (taskService.checkTask(new Variant(5, variant.getUsername(), variant.getVariant()))) {
+            variant.setDay(6);
         } else if (taskService.checkTask(new Variant(4, variant.getUsername(), variant.getVariant()))) {
             variant.setDay(5);
         } else if (taskService.checkTask(new Variant(3, variant.getUsername(), variant.getVariant()))) {

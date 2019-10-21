@@ -8,4 +8,6 @@ public interface GitBashService {
     String poem(String poem, Variant variant);
 
     String getTask(Variant variant);
+
+    Integer getDay(Variant variant);
 }
