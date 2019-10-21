@@ -18,7 +18,7 @@ public class Variant {
     private Integer variant;
 
     public Random getRandom() {
-        return new Random(hashCode());
+        return new Random(username.hashCode());
     }
 
     public String getStudDirName() {
