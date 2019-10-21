@@ -13,10 +13,10 @@ import java.io.IOException;
 
 @Slf4j
 abstract class RepoData {
-    final File dirStud = new File(System.getProperty("user.home") + "/gitgen/" +"/test1");
-    final File dirOrigin = new File(System.getProperty("user.home") + "/gitgen/" +"/test1origin");
-    final File poemStud = new File(System.getProperty("user.home") + "/gitgen/" +"/test1/poem");
-    final File poemOrigin = new File(System.getProperty("user.home") + "/gitgen/" +"/test1origin/poem");
+    final File dirStud = new File(System.getProperty("user.home") + "/gitgen/repo/" +"/test1");
+    final File dirOrigin = new File(System.getProperty("user.home") + "/gitgen/repo/" +"/test1origin");
+    final File poemStud = new File(System.getProperty("user.home") + "/gitgen/repo/" +"/test1/poem");
+    final File poemOrigin = new File(System.getProperty("user.home") + "/gitgen/repo/" +"/test1origin/poem");
     Git gitStud;
     Git gitOrigin;
 
