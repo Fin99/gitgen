@@ -2,6 +2,7 @@ package com.tuneit.gitgen.bash;
 
 import com.tuneit.gitgen.GitBashService;
 import com.tuneit.gitgen.TaskService;
+import com.tuneit.gitgen.data.CommandResult;
 import com.tuneit.gitgen.data.Variant;
 import com.tuneit.gitgen.gen.TaskServiceDefault;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,7 @@ public class GitBashServiceDefault implements GitBashService {
     private TaskService taskService = new TaskServiceDefault();
 
     @Override
-    public String poem(String poem, Variant variant) {
+    public String updatePoem(String poem, Variant variant) {
         log.info("poem ...");
         try (BufferedWriter bufferedReader = new BufferedWriter(new FileWriter(new File(variant.getStudDirName() + "/poem")))) {
             bufferedReader.write(poem);
@@ -47,54 +48,72 @@ public class GitBashServiceDefault implements GitBashService {
     }
 
     @Override
-    public String executeCommand(String line, Variant variant) {
+    public CommandResult executeCommand(String line, Variant variant) {
         updateDay(variant);
         if (variant.getDay() == 0 && !new File(variant.getStudDirName()).exists()) {
             variant.setDay(1);
             taskService.generateTask(variant);
         } else if (variant.getDay() == 6) {
-            return "Вы прошли все задания.";
+            return new CommandResult("Вы прошли все задания.");
         }
 
         try {
             if (line == null) {
-                return "Empty line";
+                return new CommandResult("Empty line");
             }
             line = line.trim();
             if (line.equals("")) {
-                return "Empty line";
+                return new CommandResult("Empty line");
             }
 
             if (line.equals("cat poem")) {
-                return command("cat poem", variant);
+                return new CommandResult(command("cat poem", variant));
             }
             if (!line.substring(0, line.indexOf(" ")).equals("git")) {
-                return "Command not found";
+                return new CommandResult("Command not found");
             }
 
             String command = line.substring(line.indexOf(" ") + 1);
 
             if (Pattern.matches("checkout (master|dev|quatrain[123])", command)) {
-                return command(line, variant);
+                return new CommandResult(command(line, variant), getPoem(variant));
             } else if (Pattern.matches("merge (master|dev|quatrain[123])", command)) {
-                return command(line, variant);
+                return new CommandResult(command(line, variant), getPoem(variant));
             } else if (Pattern.matches("commit -m [\"'][A-z0-9 ]*?[\"']", command)) {
                 String resultCommand = command(line, variant);
                 Boolean checkerResult = taskService.checkTask(variant);
                 if (variant.getDay() != 5 && checkerResult) {
                     taskService.generateTask(variant.nextDay());
-                    return resultCommand;
+                    return new CommandResult(resultCommand, getPoem(variant));
                 } else {
-                    return resultCommand;
+                    return new CommandResult(resultCommand, getPoem(variant));
                 }
             } else if (Pattern.matches("add (poem|\\.)", command)) {
-                return command(line, variant);
+                return new CommandResult(command(line, variant));
             } else {
                 return easyCommand(command, variant);
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            return "Ошибка при обработке комманды";
+            log.error("Processing command is failed", e);
+            return new CommandResult("");
+        }
+    }
+
+    private String getPoem(Variant variant) {
+        File poem = new File(variant.getStudDirName() + "/poem");
+        if (!poem.exists()) {
+            return "";
+        }
+
+        try (BufferedReader poemReader = new BufferedReader(new FileReader(poem))) {
+            StringBuilder poemBuffer = new StringBuilder();
+            while (poemReader.ready()) {
+                poemBuffer.append(poemReader.readLine()).append("\n");
+            }
+            return poemBuffer.toString().trim();
+        } catch (IOException e) {
+            log.error("Error. Poem of \"" + variant.getUsername() + "\" read is failed", e);
+            return "";
         }
     }
 
@@ -116,22 +135,22 @@ public class GitBashServiceDefault implements GitBashService {
         }
     }
 
-    private String easyCommand(String command, Variant variant) throws IOException {
+    private CommandResult easyCommand(String command, Variant variant) throws IOException {
         switch (command) {
             case "status":
-                return command("git status", variant);
+                return new CommandResult(command("git status", variant));
             case "log":
-                return command("git --no-pager log", variant);
+                return new CommandResult(command("git --no-pager log", variant));
             case "log --graph":
-                return command("git --no-pager log --graph", variant);
+                return new CommandResult(command("git --no-pager log --graph", variant));
             case "diff":
-                return command("git --no-pager diff", variant);
+                return new CommandResult(command("git --no-pager diff", variant));
             case "reset --hard HEAD":
-                return command("git reset --hard HEAD", variant);
+                return new CommandResult(command("git reset --hard HEAD", variant), getPoem(variant));
             case "branch":
-                return command("git branch", variant);
+                return new CommandResult(command("git branch", variant));
             default:
-                return "Command not found";
+                return new CommandResult("Command not found");
         }
     }
 

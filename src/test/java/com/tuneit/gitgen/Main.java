@@ -18,9 +18,9 @@ public class Main {
         while (true) {
             String command = reader.readLine();
             if (command.equals("p")) {
-                commandResult = bashService.poem(readPoem(), variant);
+                commandResult = bashService.updatePoem(readPoem(), variant);
             } else {
-                commandResult = bashService.executeCommand(command, variant);
+                commandResult = bashService.executeCommand(command, variant).getCommandResult();
             }
 
             System.out.println("//////////");

@@ -37,49 +37,49 @@ abstract class RepoData {
     }
 
     void makeMonday() {
-        log.info(bashService.executeCommand("git checkout quatrain3", variant));
-        log.info(bashService.poem("Нам мнится: мир осиротелый\n" +
+        log.info(bashService.executeCommand("git checkout quatrain3", variant).getCommandResult());
+        log.info(bashService.updatePoem("Нам мнится: мир осиротелый\n" +
                 "Неотразимый Рок настиг —\n" +
                 "И мы, в борьбе, природой целой\n" +
                 "Покинуты на нас самих.", variant));
-        log.info(bashService.executeCommand("git add .", variant));
-        log.info(bashService.executeCommand("git commit -m \"test commit\"", variant));
+        log.info(bashService.executeCommand("git add .", variant).getCommandResult());
+        log.info(bashService.executeCommand("git commit -m \"test commit\"", variant).getCommandResult());
     }
 
     void makeMondayWithError() {
-        log.info(bashService.executeCommand("git checkout quatrain3", variant));
-        log.info(bashService.poem("Нам мнится: мир осиротелый\n" +
+        log.info(bashService.executeCommand("git checkout quatrain3", variant).getCommandResult());
+        log.info(bashService.updatePoem("Нам мнится: мир осиротелый\n" +
                 "Неотразимый Рок настиг —\n" +
                 "И мы, в борьбе, прироой целой\n" +
                 "Покинуты на нас самих.", variant));
-        log.info(bashService.executeCommand("git add .", variant));
-        log.info(bashService.executeCommand("git commit -m \"test commit\"", variant));
+        log.info(bashService.executeCommand("git add .", variant).getCommandResult());
+        log.info(bashService.executeCommand("git commit -m \"test commit\"", variant).getCommandResult());
     }
 
     void makeTuesday() {
-        log.info(bashService.executeCommand("git checkout quatrain1", variant));
-        log.info(bashService.poem("Часов однообразный бой,\n" +
+        log.info(bashService.executeCommand("git checkout quatrain1", variant).getCommandResult());
+        log.info(bashService.updatePoem("Часов однообразный бой,\n" +
                 "Томительная ночи повесть!\n" +
                 "Язык для всех равно чужой\n" +
                 "И внятный каждому, как совесть!", variant));
-        log.info(bashService.executeCommand("git add .", variant));
-        log.info(bashService.executeCommand("git commit -m \"test commit\"", variant));
+        log.info(bashService.executeCommand("git add .", variant).getCommandResult());
+        log.info(bashService.executeCommand("git commit -m \"test commit\"", variant).getCommandResult());
     }
 
     void makeTuesdayWithError() {
-        log.info(bashService.executeCommand("git checkout quatrain1", variant));
-        log.info(bashService.poem("Часов однообразный бой,\n" +
+        log.info(bashService.executeCommand("git checkout quatrain1", variant).getCommandResult());
+        log.info(bashService.updatePoem("Часов однообразный бой,\n" +
                 "Томительная ночи повесть!\n" +
                 "Язык для всех равн чужой\n" +
                 "И внятный каждому, как совесть!", variant));
-        log.info(bashService.executeCommand("git add .", variant));
-        log.info(bashService.executeCommand("git commit -m \"test commit\"", variant));
+        log.info(bashService.executeCommand("git add .", variant).getCommandResult());
+        log.info(bashService.executeCommand("git commit -m \"test commit\"", variant).getCommandResult());
     }
 
     void makeWednesday() {
-        log.info(bashService.executeCommand("git checkout dev", variant));
-        log.info(bashService.executeCommand("git merge quatrain3", variant));
-        log.info(bashService.poem("Часов однообразный бой,\n" +
+        log.info(bashService.executeCommand("git checkout dev", variant).getCommandResult());
+        log.info(bashService.executeCommand("git merge quatrain3", variant).getCommandResult());
+        log.info(bashService.updatePoem("Часов однообразный бой,\n" +
                 "Томительная ночи повесть!\n" +
                 "Язык для всех равно чужой\n" +
                 "И внятный каждому, как совесть!\n\n" +
@@ -87,14 +87,14 @@ abstract class RepoData {
                 "Неотразимый Рок настиг —\n" +
                 "И мы, в борьбе, природой целой\n" +
                 "Покинуты на нас самих.", variant));
-        log.info(bashService.executeCommand("git add .", variant));
-        log.info(bashService.executeCommand("git commit -m \"test commit\"", variant));
+        log.info(bashService.executeCommand("git add .", variant).getCommandResult());
+        log.info(bashService.executeCommand("git commit -m \"test commit\"", variant).getCommandResult());
     }
 
     void makeWednesdayWithError() {
-        log.info(bashService.executeCommand("git checkout dev", variant));
-        log.info(bashService.executeCommand("git merge quatrain3", variant));
-        log.info(bashService.poem("Часов однообразный бой,\n" +
+        log.info(bashService.executeCommand("git checkout dev", variant).getCommandResult());
+        log.info(bashService.executeCommand("git merge quatrain3", variant).getCommandResult());
+        log.info(bashService.updatePoem("Часов однообразный бой,\n" +
                 "Томительная ночи повесть!\n" +
                 "Язык для всех равно чужой\n" +
                 "И внятный каждому, как совесть!\n\n" +
@@ -102,34 +102,34 @@ abstract class RepoData {
                 "Неотразимый Рокнастиг —\n" +
                 "И мы, в борьбе, природой целой\n" +
                 "Покинуты на нас самих.", variant));
-        log.info(bashService.executeCommand("git add .", variant));
-        log.info(bashService.executeCommand("git commit -m \"test commit\"", variant));
+        log.info(bashService.executeCommand("git add .", variant).getCommandResult());
+        log.info(bashService.executeCommand("git commit -m \"test commit\"", variant).getCommandResult());
     }
 
     void makeThursday() {
-        log.info(bashService.executeCommand("git checkout quatrain2", variant));
-        log.info(bashService.poem("Кто без тоски внимал из нас,\n" +
+        log.info(bashService.executeCommand("git checkout quatrain2", variant).getCommandResult());
+        log.info(bashService.updatePoem("Кто без тоски внимал из нас,\n" +
                 "Среди всемирного молчанья,\n" +
                 "Глухие времени стенанья,\n" +
                 "Пророчески-прощальный глас?", variant));
-        log.info(bashService.executeCommand("git add .", variant));
-        log.info(bashService.executeCommand("git commit -m \"test commit\"", variant));
+        log.info(bashService.executeCommand("git add .", variant).getCommandResult());
+        log.info(bashService.executeCommand("git commit -m \"test commit\"", variant).getCommandResult());
     }
 
     void makeThursdayWithError() {
-        log.info(bashService.executeCommand("git checkout quatrain2", variant));
-        log.info(bashService.poem("Кто без тоски внимал из нас,\n" +
+        log.info(bashService.executeCommand("git checkout quatrain2", variant).getCommandResult());
+        log.info(bashService.updatePoem("Кто без тоски внимал из нас,\n" +
                 "Среди всемирного молчанья,\n" +
                 "Глухие времени стенаья,\n" +
                 "Пророчески-прощальный глас?", variant));
-        log.info(bashService.executeCommand("git add .", variant));
-        log.info(bashService.executeCommand("git commit -m \"test commit\"", variant));
+        log.info(bashService.executeCommand("git add .", variant).getCommandResult());
+        log.info(bashService.executeCommand("git commit -m \"test commit\"", variant).getCommandResult());
     }
 
     void makeFriday() {
-        log.info(bashService.executeCommand("git checkout dev", variant));
-        log.info(bashService.executeCommand("git merge quatrain2", variant));
-        log.info(bashService.poem("Часов однообразный бой,\n" +
+        log.info(bashService.executeCommand("git checkout dev", variant).getCommandResult());
+        log.info(bashService.executeCommand("git merge quatrain2", variant).getCommandResult());
+        log.info(bashService.updatePoem("Часов однообразный бой,\n" +
                 "Томительная ночи повесть!\n" +
                 "Язык для всех равно чужой\n" +
                 "И внятный каждому, как совесть!\n\n" +
@@ -141,14 +141,14 @@ abstract class RepoData {
                 "Неотразимый Рок настиг —\n" +
                 "И мы, в борьбе, природой целой\n" +
                 "Покинуты на нас самих.", variant));
-        log.info(bashService.executeCommand("git add .", variant));
-        log.info(bashService.executeCommand("git commit -m \"test commit\"", variant));
+        log.info(bashService.executeCommand("git add .", variant).getCommandResult());
+        log.info(bashService.executeCommand("git commit -m \"test commit\"", variant).getCommandResult());
     }
 
     void makeFridayWithError() {
-        log.info(bashService.executeCommand("git checkout dev", variant));
-        log.info(bashService.executeCommand("git merge quatrain2", variant));
-        log.info(bashService.poem("Часов однообразный бой,\n" +
+        log.info(bashService.executeCommand("git checkout dev", variant).getCommandResult());
+        log.info(bashService.executeCommand("git merge quatrain2", variant).getCommandResult());
+        log.info(bashService.updatePoem("Часов однообразный бой,\n" +
                 "Томительна ночи повесть!\n" +
                 "Язык для всех равно чужой\n" +
                 "И внятный каждому, как совесть!\n\n" +
@@ -160,7 +160,7 @@ abstract class RepoData {
                 "Неотразимый Рок настиг —\n" +
                 "И мы, в борьбе, природой целой\n" +
                 "Покинуты на нас самих.", variant));
-        log.info(bashService.executeCommand("git add .", variant));
-        log.info(bashService.executeCommand("git commit -m \"test commit\"", variant));
+        log.info(bashService.executeCommand("git add .", variant).getCommandResult());
+        log.info(bashService.executeCommand("git commit -m \"test commit\"", variant).getCommandResult());
     }
 }
