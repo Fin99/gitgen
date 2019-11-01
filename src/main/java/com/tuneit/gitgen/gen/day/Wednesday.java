@@ -77,7 +77,8 @@ public class Wednesday extends Day {
 
     @Override
     public String getTaskText() {
-        return "Задание третье: соедините первый и третий абзац в ветку dev. Абзацы должны разделяться пустой строкой.";
+        return "Задание третье: соедините первый и третий абзац в ветку dev. " +
+                "Абзацы должны разделяться пустой строкой, а первый абзац стихотворения уже добавили в ветку dev.";
     }
 
     private void createBranchDev() throws GitAPIException {

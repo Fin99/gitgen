@@ -73,7 +73,7 @@ public class Tuesday extends Day {
 
     @Override
     public String getTaskText() {
-        return "Задание второе: исправь ошибки в первом абзаце.";
+        return "Задание второе: исправь ошибки в первом абзаце. (Кот проходил около программиста и решил ему помочь...)";
     }
 
     private void createBranchQuatrain2(Variant variant) throws IOException, GitAPIException {

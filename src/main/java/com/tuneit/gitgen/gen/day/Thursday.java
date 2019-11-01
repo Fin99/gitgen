@@ -71,7 +71,7 @@ public class Thursday extends Day {
 
     @Override
     public String getTaskText() {
-        return "Задание четвертое: исправь ошибки во втором абзаце.";
+        return "Задание четвертое: исправь ошибки во втором абзаце. (У программиста залипает 'Back Space', и ему не хватило нервов дописать второй абзац)";
     }
 
     private void updateStudRepository() throws GitAPIException {

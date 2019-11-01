@@ -75,7 +75,7 @@ public class Monday extends Day {
 
     @Override
     public String getTaskText() {
-        return "Задание первое: исправь ошибки в третьем абзаце.";
+        return "Задание первое: исправь ошибки в третьем абзаце. (Некто перепутал строки)";
     }
 
     private void createOriginRepository(Variant variant) throws GitAPIException, IOException {

@@ -76,7 +76,7 @@ public class Friday extends Day {
 
     @Override
     public String getTaskText() {
-        return "Задание пятое: присоедините третий абзац к ветке dev. Абзацы должны разделяться пустой строкой.";
+        return "Задание пятое: присоедините второй абзац к ветке dev. Абзацы должны разделяться пустой строкой.";
     }
 
     private void updateStudRepository() throws GitAPIException {
