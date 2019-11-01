@@ -1,9 +1,6 @@
 package com.tuneit.gitgen.data;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
@@ -12,4 +9,11 @@ public class CommandResult {
     @NonNull
     private String commandResult;
     private String poem;
+    private boolean changeDay = false;
+    private boolean commitCommand = false;
+
+    public CommandResult(@NonNull String commandResult, String poem) {
+        this.commandResult = commandResult;
+        this.poem = poem;
+    }
 }

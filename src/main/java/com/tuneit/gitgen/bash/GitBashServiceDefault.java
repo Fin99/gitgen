@@ -82,11 +82,13 @@ public class GitBashServiceDefault implements GitBashService {
             } else if (Pattern.matches("commit -m [\"'][A-z0-9 ]*?[\"']", command)) {
                 String resultCommand = command(line, variant);
                 Boolean checkerResult = taskService.checkTask(variant);
-                if (variant.getDay() != 5 && checkerResult) {
-                    taskService.generateTask(variant.nextDay());
-                    return new CommandResult(resultCommand, getPoem(variant));
+                if (checkerResult) {
+                    if (variant.getDay() != 5) {
+                        taskService.generateTask(variant.nextDay());
+                    }
+                    return new CommandResult(resultCommand, getPoem(variant), true, true);
                 } else {
-                    return new CommandResult(resultCommand, getPoem(variant));
+                    return new CommandResult(resultCommand, getPoem(variant), false, true);
                 }
             } else if (Pattern.matches("add (poem|\\.)", command)) {
                 return new CommandResult(command(line, variant));
