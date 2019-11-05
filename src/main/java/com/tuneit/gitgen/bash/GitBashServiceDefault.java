@@ -69,7 +69,7 @@ public class GitBashServiceDefault implements GitBashService {
             if (line.equals("cat poem")) {
                 return new CommandResult(command("cat poem", variant));
             }
-            if (!line.substring(0, line.indexOf(" ")).equals("git")) {
+            if (line.contains(" ") && !line.substring(0, line.indexOf(" ")).equals("git")) {
                 return new CommandResult("Command not found");
             }
 
