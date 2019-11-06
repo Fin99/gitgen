@@ -30,6 +30,7 @@ public class GitBashServiceDefault implements GitBashService {
 
     @Override
     public String getTask(Variant variant) {
+        log.info("Username: " + variant.getUsername() + ". getTask()");
         updateDay(variant);
         if (variant.getDay() == 0 && !new File(variant.getStudDirName()).exists()) {
             variant.setDay(1);
@@ -43,12 +44,14 @@ public class GitBashServiceDefault implements GitBashService {
 
     @Override
     public Integer getDay(Variant variant) {
+        log.info("Username: " + variant.getUsername() + ". getDay()");
         updateDay(variant);
         return variant.getDay();
     }
 
     @Override
     public CommandResult executeCommand(String line, Variant variant) {
+        log.info("Username: " + variant.getUsername() + ". Command: " + line + ". execute()" );
         updateDay(variant);
         if (variant.getDay() == 0 && !new File(variant.getStudDirName()).exists()) {
             variant.setDay(1);
