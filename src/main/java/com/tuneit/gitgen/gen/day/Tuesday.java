@@ -22,6 +22,7 @@ public class Tuesday extends Day {
             if (!new Monday().checkTask(variant)) {
                 return false;
             }
+            generateTask(variant);
             init(variant);
             fixBranchQuatrain1(variant);
             List<DiffEntry> diffEntries = diffBetweenBranches(repo, "quatrain1", "First quatrain is fixed");
@@ -64,8 +65,10 @@ public class Tuesday extends Day {
                 return;
             }
             init(variant);
-            createBranchQuatrain2(variant);
-            updateStudRepository();
+            if (repo.getOrigin().branchList().call().stream().noneMatch(ref -> ref.getName().contains("refs/heads/quatrain2"))) {
+                createBranchQuatrain2(variant);
+                updateStudRepository();
+            }
         } catch (IOException | GitAPIException e) {
             e.printStackTrace();
         }

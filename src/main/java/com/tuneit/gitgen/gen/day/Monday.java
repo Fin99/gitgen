@@ -24,6 +24,7 @@ public class Monday extends Day {
     @Override
     public Boolean checkTask(Variant variant) {
         try {
+            generateTask(variant);
             init(variant);
             fixBranchQuatrain3(variant);
             List<DiffEntry> diffEntries = diffBetweenBranches(repo, "quatrain3", "Third quatrain is fixed");
@@ -61,15 +62,17 @@ public class Monday extends Day {
 
     @Override
     public void generateTask(Variant variant) {
-        try {
-            createOriginRepository(variant);
-            repo = new Repo(Git.open(new File(variant.getOriginDirName())), null);
-            poem = new File(variant.getOriginDirName() + "/poem");
-            createBranchQuatrain1(variant);
-            createBranchQuatrain3(variant);
-            createStudRepository(variant);
-        } catch (GitAPIException | IOException | URISyntaxException e) {
-            e.printStackTrace();
+        if (!new File(variant.getOriginDirName()).exists()) {
+            try {
+                createOriginRepository(variant);
+                repo = new Repo(Git.open(new File(variant.getOriginDirName())), null);
+                poem = new File(variant.getOriginDirName() + "/poem");
+                createBranchQuatrain1(variant);
+                createBranchQuatrain3(variant);
+                createStudRepository(variant);
+            } catch (GitAPIException | IOException | URISyntaxException e) {
+                e.printStackTrace();
+            }
         }
     }
 

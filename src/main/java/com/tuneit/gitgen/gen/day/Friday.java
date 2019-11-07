@@ -21,6 +21,7 @@ public class Friday extends Day {
                 return false;
             }
             init(variant);
+            generateTask(variant);
             mergeDevAndQuatrain2(variant);
 
             List<DiffEntry> diffEntries = diffBetweenBranches(repo, "dev", "Merge dev and quatrain2");
@@ -68,7 +69,10 @@ public class Friday extends Day {
                 return;
             }
             init(variant);
-            updateStudRepository();
+            if (repo.getOrigin().branchList().call().stream().anyMatch(ref -> ref.getName().contains("refs/heads/quatrain2"))
+                    && !getFirstCommit(repo.getStud(), "quatrain2").getFullMessage().equals("Second quatrain is fixed")) {
+                updateStudRepository();
+            }
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
         }

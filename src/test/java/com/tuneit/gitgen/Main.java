@@ -10,12 +10,13 @@ import java.io.InputStreamReader;
 public class Main {
 
     private static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-    private static Variant variant = new Variant(null, "alexandr", 1);
+    private static Variant variant = new Variant(null, "3c83ff7c1126d2897b5d611e02aff7fd", 0);
     private static GitBashService bashService = new GitBashServiceDefault();
 
     public static void main(String[] args) throws IOException {
         String commandResult;
         while (true) {
+            System.out.println(bashService.getDay(variant));
             String command = reader.readLine();
             if (command.equals("p")) {
                 commandResult = bashService.updatePoem(readPoem(), variant);

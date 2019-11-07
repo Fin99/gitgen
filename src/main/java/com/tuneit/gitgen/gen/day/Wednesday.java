@@ -24,6 +24,7 @@ public class Wednesday extends Day {
                 return false;
             }
             init(variant);
+            generateTask(variant);
             mergeQuatrain1AndQuatrain3(variant);
             List<DiffEntry> diffEntries = diffBetweenBranches(repo, "dev", "Merge quatrain1 and quatrain3");
             boolean result = diffEntries != null && diffEntries.isEmpty();
@@ -68,8 +69,10 @@ public class Wednesday extends Day {
                 return;
             }
             init(variant);
-            createBranchDev();
-            updateStudRepository();
+            if (repo.getOrigin().branchList().call().stream().noneMatch(ref -> ref.getName().contains("refs/heads/dev"))) {
+                createBranchDev();
+                updateStudRepository();
+            }
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
         }
