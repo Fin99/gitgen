@@ -1,11 +1,11 @@
 package com.tuneit.gitgen.gen;
 
+import com.tuneit.gitgen.data.Variant;
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.diff.DiffEntry;
-import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
@@ -15,18 +15,23 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 public class GitAPI {
+    public static void deleteRepositories(Variant variant) {
+        try {
+            FileUtils.deleteDirectory(new File(variant.getOriginDirName()));
+            FileUtils.deleteDirectory(new File(variant.getStudDirName()));
+        } catch (IOException e) {
+            throw new IllegalStateException("Stud or origin repository is incorrect");
+        }
+    }
+
     public static void commit(Git git, String name) throws GitAPIException {
         git.add().addFilepattern("poem").call();
         git.commit().setMessage(name).call();
-    }
-
-    public static void reset(Git git, String branchName) throws GitAPIException {
-        git.checkout().setName(branchName).call();
-        git.reset().setMode(ResetCommand.ResetType.HARD).setRef("HEAD~1").call();
     }
 
     public static RevCommit getFirstCommit(Git git, String branchName) throws IOException {
@@ -35,10 +40,10 @@ public class GitAPI {
         return revWalk.parseCommit(commitId);
     }
 
-    public static List<DiffEntry> diffBetweenBranches(Repo repo, String branchName, String commitName) throws IOException, GitAPIException {
-        RevCommit originCommit = findCommit(repo.getOrigin(), branchName, commitName);
-
+    public static List<DiffEntry> diffBetweenBranches(Repo repo, String branchName, String commitName) {
+        RevCommit originCommit = null;
         try {
+            originCommit = findCommit(repo.getOrigin(), branchName, commitName);
             AbstractTreeIterator oldTreeParser = prepareTreeParser(repo.getOrigin().getRepository(), originCommit.toObjectId().getName());
             AbstractTreeIterator newTreeParser = prepareTreeParser(repo.getStud().getRepository(), branchName);
 
@@ -46,20 +51,20 @@ public class GitAPI {
             if (diff.isEmpty()) {
                 return diff;
             }
-        } catch (JGitInternalException ignored) {
+        } catch (JGitInternalException | IOException | GitAPIException ignored) {
 
         }
 
-        RevCommit studCommit = findCommit(repo.getOrigin(), branchName, commitName);
-        if (studCommit == null) {
-            return null;
-        }
         try {
+            RevCommit studCommit = findCommit(repo.getOrigin(), branchName, commitName);
+            if (studCommit == null) {
+                return null;
+            }
             AbstractTreeIterator oldTreeParser = prepareTreeParser(repo.getOrigin().getRepository(), originCommit.toObjectId().getName());
             AbstractTreeIterator newTreeParser = prepareTreeParser(repo.getStud().getRepository(), studCommit.toObjectId().getName());
 
             return repo.getOrigin().diff().setOldTree(oldTreeParser).setNewTree(newTreeParser).call();
-        } catch (MissingObjectException | JGitInternalException ignored) {
+        } catch (JGitInternalException | IOException | GitAPIException ignored) {
             return null;
         }
     }

@@ -2,13 +2,16 @@ package com.tuneit.gitgen.gen.day;
 
 import com.tuneit.gitgen.data.Poems;
 import com.tuneit.gitgen.data.Variant;
+import com.tuneit.gitgen.gen.Repo;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.CreateBranchCommand;
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
@@ -18,43 +21,57 @@ import static com.tuneit.gitgen.gen.GitAPI.*;
 @Slf4j
 public class Wednesday extends Day {
     @Override
-    public Boolean checkTask(Variant variant) {
+    public int check(Variant variant) {
+        if (isWednesdayPassed(variant)) {
+            return new Thursday().check(variant);
+        }
+        return 3;
+    }
+
+    private boolean isWednesdayPassed(Variant variant) {
         try {
-            if (!new Tuesday().checkTask(variant)) {
-                return false;
+            Repo repo = new Repo(variant);
+            String oldCommit = "First quatrain is fixed";
+            if (getFirstCommit(repo.getOrigin(), "dev").getFullMessage().equals(oldCommit)) {
+                doWednesday(variant, repo.getOrigin(), new File(variant.getOriginPoem()));
             }
-            init(variant);
-            generateTask(variant);
-            mergeQuatrain1AndQuatrain3(variant);
+
             List<DiffEntry> diffEntries = diffBetweenBranches(repo, "dev", "Merge quatrain1 and quatrain3");
-            boolean result = diffEntries != null && diffEntries.isEmpty();
-
-            if (!result) {
-                if (!getFirstCommit(repo.getStud(), "dev").getFullMessage().equals("First quatrain is fixed")) {
-                    reset(repo.getStud(), "dev");
-                }
-            }
-
-            return result;
-        } catch (GitAPIException | IOException e) {
-            e.printStackTrace();
+            return diffEntries != null && diffEntries.isEmpty();
+        } catch (IOException e) {
+            log.error("Check Wednesday is failed", e);
             return false;
         }
     }
 
-    private void mergeQuatrain1AndQuatrain3(Variant variant) throws GitAPIException, IOException {
-        String oldCommit = "First quatrain is fixed";
-        String commitName = "Merge quatrain1 and quatrain3";
+    @Override
+    public void fix(Variant variant, boolean doTask) {
+        new Tuesday().fix(variant, true);
 
-        if (getFirstCommit(repo.getOrigin(), "dev").getFullMessage().equals(oldCommit)) {
-            repo.getOrigin().checkout().setName("dev").call();
-            repo.getOrigin().merge().include(repo.getOrigin().getRepository().findRef("quatrain3")).call();
-            fixConflict(variant);
-            commit(repo.getOrigin(), commitName);
+        updateOriginRepository(variant);
+        updateStudRepository(variant);
+
+        if (doTask) {
+            Repo repo = new Repo(variant);
+            doWednesday(variant, repo.getOrigin(), new File(variant.getOriginPoem()));
+            doWednesday(variant, repo.getStud(), new File(variant.getStudPoem()));
         }
     }
 
-    private void fixConflict(Variant variant) throws IOException {
+    private void doWednesday(Variant variant, Git repository, File poem) {
+        String commitName = "Merge quatrain1 and quatrain3";
+
+        try {
+            repository.checkout().setName("dev").call();
+            repository.merge().include(repository.getRepository().findRef("quatrain3")).call();
+            fixConflict(variant, poem);
+            commit(repository, commitName);
+        } catch (GitAPIException | IOException e) {
+            log.error("Do Wednesday task is failed", e);
+        }
+    }
+
+    private void fixConflict(Variant variant, File poem) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(poem))) {
             writer.write(Poems.getRandomPoem(variant.getRandom()).getQuatrain1());
             writer.write("\n\n");
@@ -62,37 +79,26 @@ public class Wednesday extends Day {
         }
     }
 
-    @Override
-    public void generateTask(Variant variant) {
+    private void updateOriginRepository(Variant variant) {
         try {
-            if (!new Tuesday().checkTask(variant)) {
-                return;
-            }
-            init(variant);
-            if (repo.getOrigin().branchList().call().stream().noneMatch(ref -> ref.getName().contains("refs/heads/dev"))) {
-                createBranchDev();
-                updateStudRepository();
-            }
-        } catch (GitAPIException | IOException e) {
-            e.printStackTrace();
+            Repo repo = new Repo(variant);
+            repo.getOrigin().checkout().setCreateBranch(true).setStartPoint("quatrain1").setName("dev").call();
+        } catch (GitAPIException e) {
+            log.error("Update origin Wednesday repository is failed", e);
         }
     }
 
-    @Override
-    public String getTaskText() {
-        return "Задание третье: соедините первый и третий абзац в ветку dev. " +
-                "Абзацы должны разделяться пустой строкой, а первый абзац стихотворения уже добавили в ветку dev.";
-    }
+    private void updateStudRepository(Variant variant) {
+        try {
+            Repo repo = new Repo(variant);
+            repo.getStud().checkout().setName("quatrain1").call();
+            repo.getStud().fetch().setRemote("origin").call();
+            repo.getStud().reset().setMode(ResetCommand.ResetType.HARD).setRef("origin/quatrain1").call();
+            repo.getStud().checkout().setName("origin/dev").call();
+            repo.getStud().checkout().setName("dev").setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK).setCreateBranch(true).call();
+        } catch (GitAPIException e) {
+            log.error("Update stud Wednesday repository is failed", e);
+        }
 
-    private void createBranchDev() throws GitAPIException {
-        repo.getOrigin().checkout().setCreateBranch(true).setStartPoint("quatrain1").setName("dev").call();
-    }
-
-    private void updateStudRepository() throws GitAPIException {
-        repo.getStud().checkout().setName("quatrain1").call();
-        repo.getStud().fetch().setRemote("origin").call();
-        repo.getStud().reset().setMode(ResetCommand.ResetType.HARD).setRef("origin/quatrain1").call();
-        repo.getStud().checkout().setName("origin/dev").call();
-        repo.getStud().checkout().setName("dev").setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK).setCreateBranch(true).call();
     }
 }

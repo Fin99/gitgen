@@ -14,7 +14,7 @@ class MondayTest extends RepoData {
 
     @Test
     void initMondayTest() throws GitAPIException, IOException {
-        taskService.generateTask(new Variant(1, variant.getUsername(), variant.getVariant()));
+        taskService.getDay(new Variant(1, variant.getUsername(), variant.getVariant()));
         initGit();
         assertTrue(dirStud.exists());
         assertTrue(dirOrigin.exists());

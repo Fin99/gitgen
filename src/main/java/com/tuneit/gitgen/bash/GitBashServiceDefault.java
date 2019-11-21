@@ -18,7 +18,7 @@ public class GitBashServiceDefault implements GitBashService {
 
     @Override
     public String updatePoem(String poem, Variant variant) {
-        log.info("poem ...");
+        log.info("poem {}", poem);
         try (BufferedWriter bufferedReader = new BufferedWriter(new FileWriter(new File(variant.getStudDirName() + "/poem")))) {
             bufferedReader.write(poem);
             return "Файл успешно изменён";
@@ -31,13 +31,6 @@ public class GitBashServiceDefault implements GitBashService {
     @Override
     public String getTask(Variant variant) {
         log.info("Username: " + variant.getUsername() + ". getTask()");
-        updateDay(variant);
-        if (variant.getDay() == 0 && !new File(variant.getStudDirName()).exists()) {
-            variant.setDay(1);
-            taskService.generateTask(variant);
-        } else if (variant.getDay() == 6) {
-            return "Готово!";
-        }
         return taskService.getTaskText(variant);
 
     }
@@ -45,27 +38,19 @@ public class GitBashServiceDefault implements GitBashService {
     @Override
     public Integer getDay(Variant variant) {
         log.info("Username: " + variant.getUsername() + ". getDay()");
-        updateDay(variant);
-        return variant.getDay();
+        return taskService.getDay(variant);
     }
 
     @Override
     public CommandResult executeCommand(String line, Variant variant) {
-        log.info("Username: " + variant.getUsername() + ". Command: " + line + ". execute()" );
-        updateDay(variant);
-        if (variant.getDay() == 0 && !new File(variant.getStudDirName()).exists()) {
-            variant.setDay(1);
-            taskService.generateTask(variant);
-        } else if (variant.getDay() == 6) {
+        log.info("Username: " + variant.getUsername() + ". Command: " + line + ". execute()");
+        variant.setDay(taskService.getDay(variant));
+        if (variant.getDay() == 6) {
             return new CommandResult("Вы прошли все задания.");
         }
 
         try {
-            if (line == null) {
-                return new CommandResult("Empty line");
-            }
-            line = line.trim();
-            if (line.equals("")) {
+            if (line == null || (line = line.trim()).equals("")) {
                 return new CommandResult("Empty line");
             }
 
@@ -85,14 +70,7 @@ public class GitBashServiceDefault implements GitBashService {
             } else if (Pattern.matches("commit -m [\"'][A-z0-9 ]*?[\"']", command)) {
                 String resultCommand = command(line, variant);
                 Boolean checkerResult = taskService.checkTask(variant);
-                if (checkerResult) {
-                    if (variant.getDay() != 5) {
-                        taskService.generateTask(variant.nextDay());
-                    }
-                    return new CommandResult(resultCommand, getPoem(variant), true, true);
-                } else {
-                    return new CommandResult(resultCommand, getPoem(variant), false, true);
-                }
+                return new CommandResult(resultCommand, getPoem(variant), checkerResult, true);
             } else if (Pattern.matches("add (poem|\\.)", command)) {
                 return new CommandResult(command(line, variant));
             } else {
@@ -119,24 +97,6 @@ public class GitBashServiceDefault implements GitBashService {
         } catch (IOException e) {
             log.error("Error. Poem of \"" + variant.getUsername() + "\" read is failed", e);
             return "";
-        }
-    }
-
-    private void updateDay(Variant variant) {
-        if (!new File(variant.getStudDirName()).exists()) {
-            variant.setDay(0);
-        } else if (taskService.checkTask(new Variant(5, variant.getUsername(), variant.getVariant()))) {
-            variant.setDay(6);
-        } else if (taskService.checkTask(new Variant(4, variant.getUsername(), variant.getVariant()))) {
-            variant.setDay(5);
-        } else if (taskService.checkTask(new Variant(3, variant.getUsername(), variant.getVariant()))) {
-            variant.setDay(4);
-        } else if (taskService.checkTask(new Variant(2, variant.getUsername(), variant.getVariant()))) {
-            variant.setDay(3);
-        } else if (taskService.checkTask(new Variant(1, variant.getUsername(), variant.getVariant()))) {
-            variant.setDay(2);
-        } else {
-            variant.setDay(1);
         }
     }
 

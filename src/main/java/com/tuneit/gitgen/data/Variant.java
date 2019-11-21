@@ -22,11 +22,19 @@ public class Variant {
     }
 
     public String getStudDirName() {
-        return System.getProperty("user.home") + "/gitgen/repo/" + username + variant; // TODO escape character
+        return System.getProperty("user.home") + "/gitgen/repo/" + username + variant;
+    }
+
+    public String getStudPoem() {
+        return System.getProperty("user.home") + "/gitgen/repo/" + username + variant + "/poem";
     }
 
     public String getOriginDirName() {
-        return System.getProperty("user.home") + "/gitgen/repo/" + username + variant + "origin"; // TODO escape character
+        return System.getProperty("user.home") + "/gitgen/repo/" + username + variant + "origin";
+    }
+
+    public String getOriginPoem() {
+        return System.getProperty("user.home") + "/gitgen/repo/" + username + variant + "origin" + "/poem";
     }
 
     public Variant nextDay() {

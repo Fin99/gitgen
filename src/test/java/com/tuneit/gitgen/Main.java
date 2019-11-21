@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 public class Main {
 
     private static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-    private static Variant variant = new Variant(null, "3c83ff7c1126d2897b5d611e02aff7fd", 0);
+    private static Variant variant = new Variant(null, "a", 0);
     private static GitBashService bashService = new GitBashServiceDefault();
 
     public static void main(String[] args) throws IOException {
