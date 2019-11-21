@@ -9,18 +9,23 @@ import lombok.extern.slf4j.Slf4j;
 public class TaskServiceDefault implements TaskService {
     @Override
     public Boolean checkTask(Variant variant) {
-        int correctDay = getDay(variant);
+        int correctDay = checkDay(variant, variant.getDay() + 1);
         switch (correctDay) {
             case 1:
                 new Monday().fix(variant, false);
+                break;
             case 2:
                 new Tuesday().fix(variant, false);
+                break;
             case 3:
                 new Wednesday().fix(variant, false);
+                break;
             case 4:
                 new Thursday().fix(variant, false);
+                break;
             case 5:
                 new Friday().fix(variant, false);
+                break;
         }
         return correctDay > variant.getDay();
     }
@@ -56,6 +61,10 @@ public class TaskServiceDefault implements TaskService {
             day++;
         }
         return day;
+    }
+
+    private int checkDay(Variant variant, Integer day) {
+        return new Monday().check(variant, day);
     }
 
     private void init(Variant variant) {

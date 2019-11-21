@@ -22,11 +22,16 @@ import static com.tuneit.gitgen.gen.GitAPI.*;
 @Slf4j
 public class Tuesday extends Day {
     @Override
-    public int check(Variant variant) {
-        if (isTuesdayPassed(variant)) {
-            return new Wednesday().check(variant);
+    public int check(Variant variant, Integer day) {
+        if (day != 2 && isTuesdayPassed(variant)) {
+            return new Wednesday().check(variant, day);
         }
         return 2;
+    }
+
+    @Override
+    public int check(Variant variant) {
+        return check(variant, 6);
     }
 
     private boolean isTuesdayPassed(Variant variant) {

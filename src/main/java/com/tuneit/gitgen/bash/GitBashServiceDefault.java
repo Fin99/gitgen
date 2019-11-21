@@ -18,7 +18,7 @@ public class GitBashServiceDefault implements GitBashService {
 
     @Override
     public String updatePoem(String poem, Variant variant) {
-        log.info("poem {}", poem);
+        log.info("poem \n{}", poem);
         try (BufferedWriter bufferedReader = new BufferedWriter(new FileWriter(new File(variant.getStudDirName() + "/poem")))) {
             bufferedReader.write(poem);
             return "Файл успешно изменён";

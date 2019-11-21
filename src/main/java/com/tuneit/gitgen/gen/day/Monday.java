@@ -24,15 +24,20 @@ import static com.tuneit.gitgen.gen.GitAPI.*;
 @Slf4j
 public class Monday extends Day {
     @Override
-    public int check(Variant variant) {
+    public int check(Variant variant, Integer day) {
         if (!new File(variant.getStudDirName()).exists() ||
                 !new File(variant.getOriginDirName()).exists()) {
             return 0;
         }
-        if (isMondayPassed(variant)) {
-            return new Tuesday().check(variant);
+        if (day != 1 && isMondayPassed(variant)) {
+            return new Tuesday().check(variant, day);
         }
         return 1;
+    }
+
+    @Override
+    public int check(Variant variant) {
+        return check(variant, 6);
     }
 
     private boolean isMondayPassed(Variant variant) {
